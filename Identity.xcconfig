@@ -1,0 +1,4 @@
+// If building your own version of Feditext, change the development team and bundle ID to the one you use.
+
+DEVELOPMENT_TEAM = XW9CQ4A58Z
+FEDITEXT_BUNDLE_ID_BASE = com.gotgoat.metatext

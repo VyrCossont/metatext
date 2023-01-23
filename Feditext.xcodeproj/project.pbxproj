@@ -377,6 +377,7 @@
 		94979DA52A3E386D00542793 /* PushSubscription.Policy+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PushSubscription.Policy+Extensions.swift"; sourceTree = "<group>"; };
 		94B0BCD229859B750075E234 /* StatusEditHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusEditHistoryView.swift; sourceTree = "<group>"; };
 		94B22F332A2A6787008C3044 /* FamiliarFollowersLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamiliarFollowersLabel.swift; sourceTree = "<group>"; };
+		947873BB297E0F9000CACEFE /* Identity.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Identity.xcconfig; sourceTree = "<group>"; };
 		94B2C8BE2929617A00087955 /* Action Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Action Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		94B2C8BF2929617A00087955 /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
 		94B2C8C42929617A00087955 /* ActionExtensionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionExtensionViewController.swift; sourceTree = "<group>"; };
@@ -898,6 +899,7 @@
 				D0C7D46824F76169001EBDBB /* Extensions */,
 				D0666A7924C7745A00F3F04B /* Frameworks */,
 				D0BFDAF524FC7C5300C86618 /* HTTP */,
+				947873BB297E0F9000CACEFE /* Identity.xcconfig */,
 				D0BECB952501B3DD002C1B13 /* Keychain */,
 				D0C7D45624F76169001EBDBB /* Localizations */,
 				D0E0F1E424FC49FC002C04BF /* Mastodon */,
@@ -1764,7 +1766,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = XW9CQ4A58Z;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Action Extension/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Open in Metatext";
@@ -1776,12 +1777,12 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.7.2;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.gotgoat.metatext.action-extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FEDITEXT_BUNDLE_ID_BASE).action-extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1797,7 +1798,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = XW9CQ4A58Z;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Action Extension/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Open in Metatext";
@@ -1809,12 +1809,12 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.7.2;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.gotgoat.metatext.action-extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FEDITEXT_BUNDLE_ID_BASE).action-extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1824,6 +1824,7 @@
 		};
 		D047FAB424C3E21200AF17C5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 947873BB297E0F9000CACEFE /* Identity.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -1887,6 +1888,7 @@
 		};
 		D047FAB524C3E21200AF17C5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 947873BB297E0F9000CACEFE /* Identity.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -1951,7 +1953,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = XW9CQ4A58Z;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "Supporting Files/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Feditext;
@@ -1962,11 +1963,11 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.7.2;
-				PRODUCT_BUNDLE_IDENTIFIER = com.gotgoat.metatext;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FEDITEXT_BUNDLE_ID_BASE)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1983,7 +1984,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = XW9CQ4A58Z;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "Supporting Files/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Feditext;
@@ -1994,11 +1994,11 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.7.2;
-				PRODUCT_BUNDLE_IDENTIFIER = com.gotgoat.metatext;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FEDITEXT_BUNDLE_ID_BASE)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2014,7 +2014,6 @@
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = XW9CQ4A58Z;
 				INFOPLIST_FILE = Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2022,7 +2021,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.gotgoat.Unit-Tests";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FEDITEXT_BUNDLE_ID_BASE).Unit-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -2043,7 +2042,6 @@
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = XW9CQ4A58Z;
 				INFOPLIST_FILE = Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2051,7 +2049,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.gotgoat.Unit-Tests";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FEDITEXT_BUNDLE_ID_BASE).Unit-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -2070,7 +2068,6 @@
 				CODE_SIGN_ENTITLEMENTS = "Share Extension/Share Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = XW9CQ4A58Z;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				INFOPLIST_FILE = "Share Extension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -2080,11 +2077,11 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.7.2;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.gotgoat.metatext.share-extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FEDITEXT_BUNDLE_ID_BASE).share-extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG IS_SHARE_EXTENSION";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2097,7 +2094,6 @@
 				CODE_SIGN_ENTITLEMENTS = "Share Extension/Share Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = XW9CQ4A58Z;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = "Share Extension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -2107,11 +2103,11 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.7.2;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.gotgoat.metatext.share-extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FEDITEXT_BUNDLE_ID_BASE).share-extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = IS_SHARE_EXTENSION;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2125,7 +2121,6 @@
 				CODE_SIGN_ENTITLEMENTS = "Notification Service Extension/Notification Service Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = XW9CQ4A58Z;
 				INFOPLIST_FILE = "Notification Service Extension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2134,11 +2129,11 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.7.2;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.gotgoat.metatext.notification-service-extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FEDITEXT_BUNDLE_ID_BASE).notification-service-extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2150,7 +2145,6 @@
 				CODE_SIGN_ENTITLEMENTS = "Notification Service Extension/Notification Service Extension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = XW9CQ4A58Z;
 				INFOPLIST_FILE = "Notification Service Extension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2159,11 +2153,11 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.7.2;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.gotgoat.metatext.notification-service-extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FEDITEXT_BUNDLE_ID_BASE).notification-service-extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
