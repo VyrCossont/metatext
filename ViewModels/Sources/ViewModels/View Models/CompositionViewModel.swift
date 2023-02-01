@@ -101,6 +101,11 @@ public extension CompositionViewModel {
     enum Event {
         case editAttachment(AttachmentViewModel, CompositionViewModel)
         case updateAttachment(AnyPublisher<Never, Error>)
+        #if targetEnvironment(macCatalyst)
+        // These two events are used to manage the composition input accessory view on Catalyst.
+        case didBeginEditing(CompositionViewModel, AnyPublisher<String?, Never>, Int, (String) -> Void)
+        case didEndEditing
+        #endif
     }
 
     enum PollExpiry: Int, CaseIterable {
@@ -264,6 +269,31 @@ public extension CompositionViewModel {
     func discardAttachments() {
         attachmentViewModels = []
     }
+
+
+    #if targetEnvironment(macCatalyst)
+    func didBeginEditingContentWarning(tag: Int, autocompleteSelected: @escaping (String) -> Void) {
+        eventsSubject.send(.didBeginEditing(
+            self,
+            $contentWarningAutocompleteQuery.eraseToAnyPublisher(),
+            tag,
+            autocompleteSelected
+        ))
+    }
+
+    func didBeginEditingText(tag: Int, autocompleteSelected: @escaping (String) -> Void) {
+        eventsSubject.send(.didBeginEditing(
+            self,
+            $autocompleteQuery.eraseToAnyPublisher(),
+            tag,
+            autocompleteSelected
+        ))
+    }
+
+    func didEndEditing() {
+        eventsSubject.send(.didEndEditing)
+    }
+    #endif
 }
 
 public extension CompositionViewModel.PollOption {

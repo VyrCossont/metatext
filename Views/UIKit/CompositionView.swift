@@ -53,7 +53,37 @@ extension CompositionView: UITextViewDelegate {
             viewModel.textToSelectedRange = textToSelectedRange
         }
     }
+
+    #if targetEnvironment(macCatalyst)
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        assert(textView == self.textView)
+        viewModel.didBeginEditingText(
+            tag: textView.tag,
+            autocompleteSelected: { [weak self] in self?.autocompleteSelected($0) }
+        )
+    }
+
+    func textViewDidEndEditing(_ textView: UITextView) {
+        viewModel.didEndEditing()
+    }
+    #endif
 }
+
+#if targetEnvironment(macCatalyst)
+extension CompositionView: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        assert(textField == spoilerTextField)
+        viewModel.didBeginEditingContentWarning(
+            tag: spoilerTextField.tag,
+            autocompleteSelected: { [weak self] in self?.spoilerTextAutocompleteSelected($0) }
+        )
+    }
+
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        viewModel.didEndEditing()
+    }
+}
+#endif
 
 private extension CompositionView {
     static let attachmentCollectionViewHeight: CGFloat = 200
@@ -99,6 +129,9 @@ private extension CompositionView {
         spoilerTextField.addAction(
             UIAction { [weak self] _ in self?.spoilerTextFieldEditingChanged() },
             for: .editingChanged)
+        #if targetEnvironment(macCatalyst)
+        spoilerTextField.delegate = self
+        #endif
 
         let textViewFont = UIFont.preferredFont(forTextStyle: .body)
         let textInputAccessoryView = CompositionInputAccessoryView(

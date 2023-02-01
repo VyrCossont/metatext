@@ -7,10 +7,9 @@ import UIKit
 import ViewModels
 
 final class CompositionInputAccessoryView: UIView {
-    let tagForInputView = UUID().hashValue
+    var tagForInputView = UUID().hashValue
     let autocompleteSelections: AnyPublisher<String, Never>
 
-    private let viewModel: CompositionViewModel
     private let parentViewModel: ComposeStatusViewModel
     private let toolbar = UIToolbar()
     private let autocompleteCollectionView = UICollectionView(
@@ -21,11 +20,21 @@ final class CompositionInputAccessoryView: UIView {
     private let autocompleteSelectionsSubject = PassthroughSubject<String, Never>()
     private var cancellables = Set<AnyCancellable>()
 
-    init(viewModel: CompositionViewModel,
+    // These controls need to be attached to view model events.
+    private let attachmentButton = UIBarButtonItem()
+    private let pollButton = UIBarButtonItem()
+    private let contentWarningButton = UIBarButtonItem()
+    private let addButton = UIBarButtonItem()
+    private let charactersBarItem = UIBarButtonItem()
+
+    init(viewModel: CompositionViewModel? = nil,
          parentViewModel: ComposeStatusViewModel,
-         autocompleteQueryPublisher: AnyPublisher<String?, Never>) {
-        self.viewModel = viewModel
+         autocompleteQueryPublisher: AnyPublisher<String?, Never>? = nil) {
         self.parentViewModel = parentViewModel
+        defer {
+            self.viewModel = viewModel
+            self.autocompleteQueryPublisher = autocompleteQueryPublisher
+        }
         autocompleteDataSource = AutocompleteDataSource(
             collectionView: autocompleteCollectionView,
             queryPublisher: autocompleteQueryPublisher,
@@ -40,6 +49,19 @@ final class CompositionInputAccessoryView: UIView {
                 size: .init(width: UIScreen.main.bounds.width, height: .minimumButtonDimension)))
 
         initialSetup()
+    }
+
+    public weak var viewModel: CompositionViewModel? {
+        didSet {
+            cancellables.removeAll()
+            viewModelSetup()
+        }
+    }
+
+    public var autocompleteQueryPublisher: AnyPublisher<String?, Never>? {
+        didSet {
+            autocompleteDataSource.queryPublisher = autocompleteQueryPublisher
+        }
     }
 
     @available(*, unavailable)
@@ -97,42 +119,26 @@ private extension CompositionInputAccessoryView {
         var attachmentActions = [
             UIAction(
                 title: NSLocalizedString("compose.browse", comment: ""),
-                image: UIImage(systemName: "ellipsis")) { [weak self] _ in
-                guard let self = self else { return }
-
-                self.parentViewModel.presentDocumentPicker(viewModel: self.viewModel)
-            },
+                image: UIImage(systemName: "ellipsis")) { [weak self] _ in self?.presentDocumentPicker() },
             UIAction(
                 title: NSLocalizedString("compose.photo-library", comment: ""),
-                image: UIImage(systemName: "rectangle.on.rectangle")) { [weak self] _ in
-                guard let self = self else { return }
-
-                self.parentViewModel.presentMediaPicker(viewModel: self.viewModel)
-            }
+                image: UIImage(systemName: "rectangle.on.rectangle")) { [weak self] _ in self?.presentMediaPicker() }
         ]
 
         #if !IS_SHARE_EXTENSION
         attachmentActions.insert(UIAction(
             title: NSLocalizedString("compose.take-photo-or-video", comment: ""),
-            image: UIImage(systemName: "camera.fill")) { [weak self] _ in
-            guard let self = self else { return }
-
-            self.parentViewModel.presentCamera(viewModel: self.viewModel)
-        },
+            image: UIImage(systemName: "camera.fill")) { [weak self] _ in self?.presentCamera() },
         at: 1)
         #endif
 
-        let attachmentButton = UIBarButtonItem(
-            image: UIImage(systemName: "paperclip"),
-            menu: UIMenu(children: attachmentActions))
-
+        attachmentButton.image = UIImage(systemName: "paperclip")
+        attachmentButton.menu = UIMenu(children: attachmentActions)
         attachmentButton.accessibilityLabel =
             NSLocalizedString("compose.attachments-button.accessibility-label", comment: "")
 
-        let pollButton = UIBarButtonItem(
-            image: UIImage(systemName: "chart.bar.xaxis"),
-            primaryAction: UIAction { [weak self] _ in self?.viewModel.displayPoll.toggle() })
-
+        pollButton.image = UIImage(systemName: "chart.bar.xaxis")
+        pollButton.primaryAction = UIAction { [weak self] _ in self?.togglePoll() }
         pollButton.accessibilityLabel = NSLocalizedString("compose.poll-button.accessibility-label", comment: "")
 
         let visibilityButton = UIBarButtonItem(
@@ -140,20 +146,8 @@ private extension CompositionInputAccessoryView {
             menu: visibilityMenu(selectedVisibility: parentViewModel.visibility))
         visibilityButton.isEnabled = parentViewModel.canChangeVisibility
 
-        let contentWarningButton = UIBarButtonItem(
-            title: NSLocalizedString("status.content-warning-abbreviation", comment: ""),
-            primaryAction: UIAction { [weak self] _ in self?.viewModel.displayContentWarning.toggle() })
-
-        viewModel.$displayContentWarning.sink {
-            if $0 {
-                contentWarningButton.accessibilityHint =
-                    NSLocalizedString("compose.content-warning-button.remove", comment: "")
-            } else {
-                contentWarningButton.accessibilityHint =
-                    NSLocalizedString("compose.content-warning-button.add", comment: "")
-            }
-        }
-        .store(in: &cancellables)
+        contentWarningButton.title = NSLocalizedString("status.content-warning-abbreviation", comment: "")
+        contentWarningButton.primaryAction = UIAction { [weak self] _ in self?.toggleContentWarning() }
 
         let emojiButton = UIBarButtonItem(
             image: UIImage(systemName: "face.smiling"),
@@ -165,13 +159,8 @@ private extension CompositionInputAccessoryView {
 
         emojiButton.accessibilityLabel = NSLocalizedString("compose.emoji-button", comment: "")
 
-        let addButton = UIBarButtonItem(
-            image: UIImage(systemName: "plus.circle.fill"),
-            primaryAction: UIAction { [weak self] _ in
-                guard let self = self else { return }
-
-                self.parentViewModel.insert(after: self.viewModel)
-            })
+        addButton.image = UIImage(systemName: "plus.circle.fill")
+        addButton.primaryAction = UIAction { [weak self] _ in self?.addStatus() }
 
         switch parentViewModel.identityContext.appPreferences.statusWord {
         case .toot:
@@ -181,8 +170,6 @@ private extension CompositionInputAccessoryView {
             addButton.accessibilityLabel =
                 NSLocalizedString("compose.add-button-accessibility-label.post", comment: "")
         }
-
-        let charactersBarItem = UIBarButtonItem()
 
         charactersBarItem.isEnabled = false
 
@@ -200,30 +187,6 @@ private extension CompositionInputAccessoryView {
             charactersBarItem,
             UIBarButtonItem.fixedSpace(.defaultSpacing),
             addButton]
-
-        viewModel.$canAddAttachment
-            .sink { attachmentButton.isEnabled = $0 }
-            .store(in: &cancellables)
-
-        viewModel.$attachmentViewModels
-            .combineLatest(viewModel.$attachmentUploadViewModels)
-            .sink { pollButton.isEnabled = $0.isEmpty && $1.isEmpty }
-            .store(in: &cancellables)
-
-        viewModel.$remainingCharacters.sink {
-            charactersBarItem.title = String($0)
-            charactersBarItem.setTitleTextAttributes(
-                [.foregroundColor: $0 < 0 ? UIColor.systemRed : UIColor.label],
-                for: .disabled)
-            charactersBarItem.accessibilityHint = String.localizedStringWithFormat(
-                NSLocalizedString("compose.characters-remaining-accessibility-label-%ld", comment: ""),
-                $0)
-        }
-        .store(in: &cancellables)
-
-        viewModel.$isPostable
-            .sink { addButton.isEnabled = $0 }
-            .store(in: &cancellables)
 
         self.autocompleteCollectionView.publisher(for: \.contentSize)
             .map(\.height)
@@ -244,6 +207,50 @@ private extension CompositionInputAccessoryView {
                     NSLocalizedString("compose.visibility-button.accessibility-label-%@", comment: ""),
                     $0.title ?? "")
             }
+            .store(in: &cancellables)
+    }
+
+    /// Attach some controls to view model events.
+    func viewModelSetup() {
+        guard let viewModel = viewModel else {
+            return
+        }
+
+        viewModel.$displayContentWarning.sink { [weak self] in
+            guard let self = self else { return }
+            if $0 {
+                self.contentWarningButton.accessibilityHint =
+                    NSLocalizedString("compose.content-warning-button.remove", comment: "")
+            } else {
+                self.contentWarningButton.accessibilityHint =
+                    NSLocalizedString("compose.content-warning-button.add", comment: "")
+            }
+        }
+        .store(in: &cancellables)
+
+        viewModel.$canAddAttachment
+            .sink { [weak self] in self?.attachmentButton.isEnabled = $0 }
+            .store(in: &cancellables)
+
+        viewModel.$attachmentViewModels
+            .combineLatest(viewModel.$attachmentUploadViewModels)
+            .sink { [weak self] in self?.pollButton.isEnabled = $0.isEmpty && $1.isEmpty }
+            .store(in: &cancellables)
+
+        viewModel.$remainingCharacters.sink { [weak self] in
+            guard let self = self else { return }
+            self.charactersBarItem.title = String($0)
+            self.charactersBarItem.setTitleTextAttributes(
+                [.foregroundColor: $0 < 0 ? UIColor.systemRed : UIColor.label],
+                for: .disabled)
+            self.charactersBarItem.accessibilityHint = String.localizedStringWithFormat(
+                NSLocalizedString("compose.characters-remaining-accessibility-label-%ld", comment: ""),
+                $0)
+        }
+        .store(in: &cancellables)
+
+        viewModel.$isPostable
+            .sink { [weak self] in self?.addButton.isEnabled = $0 }
             .store(in: &cancellables)
     }
 }
@@ -351,5 +358,37 @@ private extension CompositionInputAccessoryView {
         heightConstraint?.constant = .minimumButtonDimension + autocompleteCollectionViewHeight
         updateConstraints()
         superview?.superview?.layoutIfNeeded()
+    }
+
+    func presentDocumentPicker() {
+        if let viewModel = self.viewModel {
+            self.parentViewModel.presentDocumentPicker(viewModel: viewModel)
+        }
+    }
+
+    func presentMediaPicker() {
+        if let viewModel = self.viewModel {
+            self.parentViewModel.presentMediaPicker(viewModel: viewModel)
+        }
+    }
+
+    func presentCamera() {
+        if let viewModel = self.viewModel {
+            self.parentViewModel.presentCamera(viewModel: viewModel)
+        }
+    }
+
+    func togglePoll() {
+        viewModel?.displayPoll.toggle()
+    }
+
+    func toggleContentWarning() {
+        viewModel?.displayContentWarning.toggle()
+    }
+
+    func addStatus() {
+        if let viewModel = self.viewModel {
+            self.parentViewModel.insert(after: viewModel)
+        }
     }
 }

@@ -20,9 +20,19 @@ final class ComposeStatusViewController: UIViewController {
     private let documentPickerResults = PassthroughSubject<[URL]?, Never>()
     private var cancellables = Set<AnyCancellable>()
 
+    #if targetEnvironment(macCatalyst)
+    /// Catalyst doesn't have input accessories, so we'll attach one to the bottom of the view,
+    /// and change its autocomplete data source in response to events telling us which status and field are focused.
+    private let compositionInputAccessoryView: CompositionInputAccessoryView
+    private var compositionInputAccessoryCancellables = Set<AnyCancellable>()
+    #endif
+
     init(viewModel: ComposeStatusViewModel, rootViewModel: RootViewModel?) {
         self.viewModel = viewModel
         self.rootViewModel = rootViewModel
+        #if targetEnvironment(macCatalyst)
+        self.compositionInputAccessoryView = CompositionInputAccessoryView(parentViewModel: viewModel)
+        #endif
 
         super.init(nibName: nil, bundle: nil)
 
@@ -54,11 +64,10 @@ final class ComposeStatusViewController: UIViewController {
         activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
         activityIndicatorView.hidesWhenStopped = true
 
-        NSLayoutConstraint.activate([
+        var constraints = [
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
@@ -66,7 +75,22 @@ final class ComposeStatusViewController: UIViewController {
             stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             activityIndicatorView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
             activityIndicatorView.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor)
+        ]
+
+        #if targetEnvironment(macCatalyst)
+        view.addSubview(compositionInputAccessoryView)
+        compositionInputAccessoryView.translatesAutoresizingMaskIntoConstraints = false
+        constraints.append(contentsOf: [
+            compositionInputAccessoryView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            compositionInputAccessoryView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            compositionInputAccessoryView.topAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            compositionInputAccessoryView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+        #else
+        constraints.append(scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor))
+        #endif
+
+        NSLayoutConstraint.activate(constraints)
 
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             systemItem: .cancel,
@@ -165,6 +189,20 @@ private extension ComposeStatusViewController {
                 compositionViewModel: compositionViewModel)
         case let .changeIdentity(identity):
             changeIdentity(identity)
+        #if targetEnvironment(macCatalyst)
+        case let .didBeginEditing(compositionViewModel, autocompleteQueryPublisher, tag, autocompleteSelected):
+            compositionInputAccessoryView.viewModel = compositionViewModel
+            compositionInputAccessoryView.autocompleteQueryPublisher = autocompleteQueryPublisher
+            compositionInputAccessoryView.tagForInputView = tag
+            compositionInputAccessoryView.autocompleteSelections
+                .sink { autocompleteSelected($0) }
+                .store(in: &compositionInputAccessoryCancellables)
+        case .didEndEditing:
+            compositionInputAccessoryView.viewModel = nil
+            compositionInputAccessoryView.autocompleteQueryPublisher = nil
+            compositionInputAccessoryView.tagForInputView = 0
+            compositionInputAccessoryCancellables.removeAll()
+        #endif
         }
     }
 

@@ -23,9 +23,10 @@ final class AutocompleteDataSource: UICollectionViewDiffableDataSource<Autocompl
     private let updateQueue =
         DispatchQueue(label: "com.metabolist.metatext.autocomplete-data-source.update-queue")
     private var cancellables = Set<AnyCancellable>()
+    private var queryPublisherCancellables = Set<AnyCancellable>()
 
     init(collectionView: UICollectionView,
-         queryPublisher: AnyPublisher<String?, Never>,
+         queryPublisher: AnyPublisher<String?, Never>?,
          parentViewModel: ComposeStatusViewModel) {
         searchViewModel = SearchViewModel(identityContext: parentViewModel.identityContext)
         emojiPickerViewModel = EmojiPickerViewModel(identityContext: parentViewModel.identityContext, queryOnly: true)
@@ -47,12 +48,9 @@ final class AutocompleteDataSource: UICollectionViewDiffableDataSource<Autocompl
             }
         }
 
-        queryPublisher
-            .replaceNil(with: "")
-            .removeDuplicates()
-            .combineLatest($searchViewModel, $emojiPickerViewModel)
-            .sink(receiveValue: Self.combine(query:searchViewModel:emojiPickerViewModel:))
-            .store(in: &cancellables)
+        defer {
+            self.queryPublisher = queryPublisher
+        }
 
         $searchViewModel.map(\.updates)
             .switchToLatest()
@@ -70,6 +68,18 @@ final class AutocompleteDataSource: UICollectionViewDiffableDataSource<Autocompl
                 self.emojiPickerViewModel = EmojiPickerViewModel(identityContext: $0, queryOnly: true)
             }
             .store(in: &cancellables)
+    }
+
+    public var queryPublisher: AnyPublisher<String?, Never>? {
+        didSet {
+            queryPublisherCancellables.removeAll()
+            queryPublisher?
+                .replaceNil(with: "")
+                .removeDuplicates()
+                .combineLatest($searchViewModel, $emojiPickerViewModel)
+                .sink(receiveValue: Self.combine(query:searchViewModel:emojiPickerViewModel:))
+                .store(in: &queryPublisherCancellables)
+        }
     }
 
     override func apply(_ snapshot: NSDiffableDataSourceSnapshot<AutocompleteSection, AutocompleteItem>,

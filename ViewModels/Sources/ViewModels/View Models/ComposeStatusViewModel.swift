@@ -147,6 +147,11 @@ public extension ComposeStatusViewModel {
         case presentEmojiPicker(Int)
         case editAttachment(AttachmentViewModel, CompositionViewModel)
         case changeIdentity(Identity)
+        #if targetEnvironment(macCatalyst)
+        // These two events are used to manage the composition input accessory view on Catalyst.
+        case didBeginEditing(CompositionViewModel, AnyPublisher<String?, Never>, Int, (String) -> Void)
+        case didEndEditing
+        #endif
     }
 
     enum PostingState {
@@ -253,6 +258,17 @@ private extension ComposeStatusViewModel {
             eventsSubject.send(.editAttachment(attachmentViewModel, compositionViewModel))
         case let .updateAttachment(publisher):
             publisher.assignErrorsToAlertItem(to: \.alertItem, on: self).sink { _ in }.store(in: &cancellables)
+        #if targetEnvironment(macCatalyst)
+        case let .didBeginEditing(compositionViewModel, autocompleteQueryPublisher, tag, autocompleteSelected):
+            eventsSubject.send(.didBeginEditing(
+                compositionViewModel,
+                autocompleteQueryPublisher,
+                tag,
+                autocompleteSelected
+            ))
+        case .didEndEditing:
+            eventsSubject.send(.didEndEditing)
+        #endif
         }
     }
 

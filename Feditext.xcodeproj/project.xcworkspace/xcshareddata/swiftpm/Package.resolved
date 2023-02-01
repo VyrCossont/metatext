@@ -1,0 +1,70 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Base16",
+        "repositoryURL": "https://github.com/metabolist/base16.git",
+        "state": {
+          "branch": null,
+          "revision": "050929070f6ebd996841a14096362df971ce9454",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "BlurHash",
+        "repositoryURL": "https://github.com/metabolist/blurhash.git",
+        "state": {
+          "branch": null,
+          "revision": "4d86c470d866b2d8989adc5a65b121221e40df54",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "CodableBloomFilter",
+        "repositoryURL": "https://github.com/metabolist/codable-bloom-filter.git",
+        "state": {
+          "branch": null,
+          "revision": "53f80465056a95253df797f1d8a9199f8b1c0543",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "CombineExpectations",
+        "repositoryURL": "https://github.com/groue/CombineExpectations.git",
+        "state": {
+          "branch": null,
+          "revision": "04d4e4b21c9e8361925f03f64a7ecda89ef9974f",
+          "version": "0.10.0"
+        }
+      },
+      {
+        "package": "GRDB",
+        "repositoryURL": "https://github.com/metabolist/GRDB.swift.git",
+        "state": {
+          "branch": "a6ff285",
+          "revision": "a6ff285eb1b0f8933c610b82e8d6ca7093fd7997",
+          "version": null
+        }
+      },
+      {
+        "package": "SDWebImage",
+        "repositoryURL": "https://github.com/SDWebImage/SDWebImage",
+        "state": {
+          "branch": null,
+          "revision": "318cca556b0489aede0cd98d8d0c7f1408ab7bd6",
+          "version": "5.13.5"
+        }
+      },
+      {
+        "package": "SwiftSoup",
+        "repositoryURL": "https://github.com/scinfu/SwiftSoup.git",
+        "state": {
+          "branch": null,
+          "revision": "6778575285177365cbad3e5b8a72f2a20583cfec",
+          "version": "2.4.3"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
