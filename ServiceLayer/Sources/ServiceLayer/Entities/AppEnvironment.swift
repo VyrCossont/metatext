@@ -19,6 +19,7 @@ public struct AppEnvironment {
     let uuid: () -> UUID
     let inMemoryContent: Bool
     let fixtureDatabase: IdentityDatabase?
+    let orb: OrbOfShame
 
     public init(session: URLSession,
                 webAuthSessionType: WebAuthSession.Type,
@@ -29,7 +30,8 @@ public struct AppEnvironment {
                 autoplayVideos: @escaping () -> Bool,
                 uuid: @escaping () -> UUID,
                 inMemoryContent: Bool,
-                fixtureDatabase: IdentityDatabase?) {
+                fixtureDatabase: IdentityDatabase?,
+                orb: OrbOfShame) {
         self.session = session
         self.webAuthSessionType = webAuthSessionType
         self.keychain = keychain
@@ -40,6 +42,7 @@ public struct AppEnvironment {
         self.uuid = uuid
         self.inMemoryContent = inMemoryContent
         self.fixtureDatabase = fixtureDatabase
+        self.orb = orb
     }
 }
 
@@ -48,9 +51,14 @@ public extension AppEnvironment {
                      reduceMotion: @escaping () -> Bool,
                      autoplayVideos: @escaping () -> Bool) -> Self {
         let userDefaults = UserDefaults(suiteName: AppMetadata.appGroup)!
-
+        let orb = OrbOfShame()
+        let session = URLSession(
+            configuration: .default,
+            delegate: OrbDelegate(orb: orb),
+            delegateQueue: nil
+        )
         return Self(
-            session: URLSession.shared,
+            session: session,
             webAuthSessionType: LiveWebAuthSession.self,
             keychain: LiveKeychain.self,
             userDefaults: userDefaults,
@@ -59,6 +67,8 @@ public extension AppEnvironment {
             autoplayVideos: autoplayVideos,
             uuid: UUID.init,
             inMemoryContent: false,
-            fixtureDatabase: nil)
+            fixtureDatabase: nil,
+            orb: orb
+        )
     }
 }

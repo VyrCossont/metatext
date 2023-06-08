@@ -10,32 +10,34 @@ struct RootView: View {
     @StateObject var viewModel: RootViewModel
 
     var body: some View {
-        if let navigationViewModel = viewModel.navigationViewModel {
-            MainNavigationView { navigationViewModel }
-                .id(navigationViewModel.identityContext.identity.id)
-                .environmentObject(viewModel)
-                .transition(.opacity)
-                .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
-                .onOpenURL(perform: { openURL(navigationViewModel, $0) })
-                .edgesIgnoringSafeArea(.all)
-                .onReceive(navigationViewModel.identityContext.$appPreferences.map(\.colorScheme),
-                           perform: setColorScheme)
-                .tint(viewModel.tintColor?.color)
-                .onReceive(viewModel.$tintColor,
-                           perform: setTintColor)
-                .environment(\.statusWord, viewModel.statusWord)
-                .toast($viewModel.toastAlertItem)
-        } else {
-            NavigationView {
-                AddIdentityView(
-                    viewModelClosure: { viewModel.addIdentityViewModel() },
-                    displayWelcome: true)
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationBarHidden(true)
+        ZStack(alignment: .topTrailing) {
+            if let navigationViewModel = viewModel.navigationViewModel {
+                MainNavigationView { navigationViewModel }
+                    .id(navigationViewModel.identityContext.identity.id)
+                    .environmentObject(viewModel)
+                    .transition(.opacity)
+                    .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
+                    .onOpenURL(perform: { openURL(navigationViewModel, $0) })
+                    .edgesIgnoringSafeArea(.all)
+                    .onReceive(navigationViewModel.identityContext.$appPreferences.map(\.colorScheme),
+                               perform: setColorScheme)
+                    .tint(viewModel.tintColor?.color)
+                    .onReceive(viewModel.$tintColor,
+                               perform: setTintColor)
+                    .environment(\.statusWord, viewModel.statusWord)
+                    .toast($viewModel.toastAlertItem)
+            } else {
+                NavigationView {
+                    AddIdentityView(
+                        viewModelClosure: { viewModel.addIdentityViewModel() },
+                        displayWelcome: true)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationBarHidden(true)
+                }
             }
-            .environmentObject(viewModel)
-            .navigationViewStyle(StackNavigationViewStyle())
-            .transition(.opacity)
+
+            OrbView(viewModel: viewModel)
+                .offset(x: -25, y: 5)
         }
     }
 
@@ -48,6 +50,17 @@ struct RootView: View {
         default:
             break
         }
+    }
+}
+
+struct OrbView: View {
+    @ObservedObject var viewModel: RootViewModel
+
+    var body: some View {
+        Circle()
+            .fill(.purple)
+            .frame(width: 2 * viewModel.shame, height: 2 * viewModel.shame)
+            .padding(.all, 10 - viewModel.shame)
     }
 }
 

@@ -16,7 +16,8 @@ public extension AppEnvironment {
                      userNotificationClient: UserNotificationClient = .mock,
                      uuid: @escaping () -> UUID = UUID.init,
                      inMemoryContent: Bool = true,
-                     fixtureDatabase: IdentityDatabase? = nil) -> Self {
+                     fixtureDatabase: IdentityDatabase? = nil,
+                     orb: OrbOfShame = OrbOfShame()) -> Self {
         AppEnvironment(
             session: session,
             webAuthSessionType: webAuthSessionType,
@@ -27,6 +28,7 @@ public extension AppEnvironment {
             autoplayVideos: { true },
             uuid: uuid,
             inMemoryContent: inMemoryContent,
-            fixtureDatabase: fixtureDatabase)
+            fixtureDatabase: fixtureDatabase,
+            orb: orb)
     }
 }

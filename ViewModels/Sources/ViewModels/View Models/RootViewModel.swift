@@ -12,12 +12,14 @@ public final class RootViewModel: ObservableObject {
     @Published public private(set) var statusWord: AppPreferences.StatusWord = .default
     /// Assign something to this to display a toast alert.
     @Published public var toastAlertItem: AlertItem?
+    @Published public private(set) var shame: CGFloat = 5
 
     @Published private var mostRecentlyUsedIdentityId: Identity.Id?
     private let environment: AppEnvironment
     private let registerForRemoteNotifications: () -> AnyPublisher<Data, Error>
     private let allIdentitiesService: AllIdentitiesService
     private let userNotificationService: UserNotificationService
+    private let orbService: OrbService
     private var cancellables = Set<AnyCancellable>()
 
     public init(environment: AppEnvironment,
@@ -26,6 +28,7 @@ public final class RootViewModel: ObservableObject {
         self.registerForRemoteNotifications = registerForRemoteNotifications
         allIdentitiesService = try AllIdentitiesService(environment: environment)
         userNotificationService = UserNotificationService(environment: environment)
+        orbService = OrbService(environment: environment)
 
         allIdentitiesService.immediateMostRecentlyUsedIdentityIdPublisher()
             .replaceError(with: nil)
@@ -72,6 +75,10 @@ public final class RootViewModel: ObservableObject {
                     .eraseToAnyPublisher()
             }
             .assign(to: &$statusWord)
+
+        orbService.orb.$shame
+            .receive(on: RunLoop.main)
+            .assign(to: &$shame)
     }
 }
 
