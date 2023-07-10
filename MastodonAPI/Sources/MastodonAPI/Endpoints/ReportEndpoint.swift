@@ -8,6 +8,7 @@ import Mastodon
 /// - https://api.pleroma.social/#tag/Reports
 public enum ReportEndpoint {
     case create(Elements)
+    case report(id: Report.Id)
 }
 
 public extension ReportEndpoint {
@@ -33,7 +34,12 @@ extension ReportEndpoint: Endpoint {
     }
 
     public var pathComponentsInContext: [String] {
-        []
+        switch self {
+        case .create:
+            return []
+        case let .report(id: id):
+            return [id]
+        }
     }
 
     public var jsonBody: [String: Any]? {
@@ -60,6 +66,8 @@ extension ReportEndpoint: Endpoint {
             }
 
             return params
+        case .report:
+            return nil
         }
     }
 
@@ -67,6 +75,8 @@ extension ReportEndpoint: Endpoint {
         switch self {
         case .create:
             return .post
+        case .report:
+            return .get
         }
     }
 
@@ -93,6 +103,8 @@ extension ReportEndpoint: Endpoint {
             case .legal:
                 return .mastodonForks("4.2.0")
             }
+        case .report:
+            return ReportsEndpoint.reports.requires
         }
     }
 }
