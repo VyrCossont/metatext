@@ -65,13 +65,12 @@ private extension AppIconPreferencesView {
 enum AppIcon: String, CaseIterable {
     case classic = "AppIconClassic"
     case rainbow = "AppIconRainbow"
-    case brutalist = "AppIconBrutalist"
-    case rainbowBrutalist = "AppIconRainbowBrutalist"
-    case malow = "AppIconMalow"
+    case rainbowPaint = "AppIconRainbowPaint"
+    case transPaint = "AppIconTransPaint"
 }
 
 extension AppIcon {
-    static var current: Self? { Self(rawValue: UIApplication.shared.alternateIconName ?? Self.classic.rawValue) }
+    static var current: Self? { Self(rawValue: UIApplication.shared.alternateIconName ?? Self.rainbowPaint.rawValue) }
 
     var nameLocalizedStringKey: LocalizedStringKey {
         switch self {
@@ -79,18 +78,16 @@ extension AppIcon {
             return "app-icon.classic"
         case .rainbow:
             return "app-icon.rainbow"
-        case .brutalist:
-            return "app-icon.brutalist"
-        case .rainbowBrutalist:
-            return "app-icon.rainbow-brutalist"
-        case .malow:
-            return "app-icon.malow"
+        case .rainbowPaint:
+            return "app-icon.rainbow-paint"
+        case .transPaint:
+            return "app-icon.trans-paint"
         }
     }
 
     var alternateIconName: String? {
         switch self {
-        case .classic:
+        case .rainbowPaint:
             return nil
         default:
             return rawValue

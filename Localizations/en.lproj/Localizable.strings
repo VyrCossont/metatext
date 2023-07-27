@@ -95,11 +95,10 @@
 "api-error.api-not-available.description" = "Your instance software isn't known to support whatever you just tried to do. If you're using a development instance, try turning on API compatibility mode in the preferences. Otherwise, please report this error to the Feditext developers.";
 "api-error.unable-to-fetch-remote-status" = "Unable to fetch remote status";
 "apns-default-message" = "New notification";
-"app-icon.brutalist" = "Brutalist";
-"app-icon.rainbow-brutalist" = "Rainbow Brutalist";
 "app-icon.classic" = "Classic";
-"app-icon.malow" = "Malow";
 "app-icon.rainbow" = "Rainbow";
+"app-icon.rainbow-paint" = "Rainbow Paint";
+"app-icon.trans-paint" = "Trans Paint";
 "add-identity.get-started" = "Get started";
 "add-identity.instance-url" = "Instance URL";
 "add-identity.log-in" = "Log in";
