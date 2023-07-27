@@ -372,6 +372,7 @@
 		943CF10A2A731FC20032A0D2 /* AppIconTransPaint@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIconTransPaint@2x.png"; sourceTree = "<group>"; };
 		943CF10B2A731FC20032A0D2 /* AppIconClassic@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIconClassic@3x.png"; sourceTree = "<group>"; };
 		943CF10C2A731FC20032A0D2 /* AppIconRainbow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIconRainbow@2x.png"; sourceTree = "<group>"; };
+		943CF1152A7324620032A0D2 /* Asset Originals */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Asset Originals"; sourceTree = "<group>"; };
 		9460331E2A2D3B8E00F5757E /* NotificationReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationReportView.swift; sourceTree = "<group>"; };
 		947873BB297E0F9000CACEFE /* Identity.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Identity.xcconfig; sourceTree = "<group>"; };
 		947B6CEE2A70909300630B24 /* EditDisplayFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDisplayFilterView.swift; sourceTree = "<group>"; };
@@ -884,6 +885,7 @@
 				94B2C8C12929617A00087955 /* Action Extension */,
 				D0D4301925F08CE600BE5504 /* App Icons */,
 				D0C7D45224F76169001EBDBB /* Assets.xcassets */,
+				943CF1152A7324620032A0D2 /* Asset Originals */,
 				D0FE1C9625368A15003EF1EB /* Caches */,
 				D0A1F4F5252E7D2A004435BF /* Data Sources */,
 				D085C3BB25008DEC008A6C5E /* DB */,

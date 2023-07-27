@@ -18,6 +18,24 @@ struct AboutView: View {
                 .padding()
             }
             .frame(maxWidth: .infinity, alignment: .center)
+            Section {
+                Button {
+                    viewModel.navigateToURL(Self.officialAccountURL)
+                } label: {
+                    Label {
+                        Text("about.official-account").foregroundColor(.primary)
+                    } icon: {
+                        Image(systemName: "checkmark.seal")
+                    }
+                }
+                Link(destination: Self.sourceCodeAndIssueTrackerURL) {
+                    Label {
+                        Text("about.source-code-and-issue-tracker").foregroundColor(.primary)
+                    } icon: {
+                        Image(systemName: "wrench.and.screwdriver")
+                    }
+                }
+            }
             Section("about.maintained-by") {
                 ForEach(Self.maintainers) { maintainer in
                     Button {
@@ -28,13 +46,6 @@ struct AboutView: View {
                         } icon: {
                             Text(verbatim: maintainer.emoji).foregroundColor(.primary)
                         }
-                    }
-                }
-                Link(destination: Self.sourceCodeAndIssueTrackerURL) {
-                    Label {
-                        Text("about.source-code-and-issue-tracker").foregroundColor(.primary)
-                    } icon: {
-                        Image(systemName: "wrench.and.screwdriver")
                     }
                 }
             }
@@ -61,6 +72,7 @@ struct AboutView: View {
 }
 
 private extension AboutView {
+    static let officialAccountURL = URL(string: "https://fedi.software/@Feditext")!
     static let sourceCodeAndIssueTrackerURL = AppUrl.website
 
     struct Maintainer: Identifiable {
