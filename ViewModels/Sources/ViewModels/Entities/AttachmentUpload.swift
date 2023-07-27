@@ -13,12 +13,20 @@ public class AttachmentUploadViewModel: ObservableObject {
     let data: Data
     let mimeType: String
     let description: String?
+    let focus: Attachment.Meta.Focus?
     var cancellable: AnyCancellable?
 
-    init(data: Data, mimeType: String, description: String?, parentViewModel: ComposeStatusViewModel) {
+    init(
+        data: Data,
+        mimeType: String,
+        description: String?,
+        focus: Attachment.Meta.Focus?,
+        parentViewModel: ComposeStatusViewModel
+    ) {
         self.data = data
         self.mimeType = mimeType
         self.description = description
+        self.focus = focus
         self.parentViewModel = parentViewModel
     }
 }
@@ -31,6 +39,7 @@ public extension AttachmentUploadViewModel {
             data: data,
             mimeType: mimeType,
             description: description,
+            focus: focus,
             progress: progress
         )
     }

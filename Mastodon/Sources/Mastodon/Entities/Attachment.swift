@@ -22,8 +22,13 @@ public struct Attachment: Codable {
         }
 
         public struct Focus: Codable, Hashable {
-            public var x: Double?
-            public var y: Double?
+            public var x: Double
+            public var y: Double
+
+            public init(x: Double, y: Double) {
+                self.x = x
+                self.y = y
+            }
         }
 
         public let original: Info?

@@ -358,6 +358,7 @@ public extension IdentityService {
         data: Data,
         mimeType: String,
         description: String?,
+        focus: Attachment.Meta.Focus?,
         progress: Progress
     ) -> AnyPublisher<Attachment, Error> {
         mastodonAPIClient.request(
@@ -365,7 +366,7 @@ public extension IdentityService {
                 data: data,
                 mimeType: mimeType,
                 description: description,
-                focus: nil
+                focus: focus
             ),
             progress: progress
         )

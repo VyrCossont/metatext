@@ -255,15 +255,19 @@ public extension CompositionViewModel {
                             .eraseToAnyPublisher()
                         : Just(nil)
                             .setFailureType(to: Error.self)
-                            .eraseToAnyPublisher()
+                            .eraseToAnyPublisher(),
+                    MediaProcessingService.focus(itemProvider: $0)
+                        .setFailureType(to: Error.self)
+                        .eraseToAnyPublisher()
                 )
                 .receive(on: DispatchQueue.main)
                 .assignErrorsToAlertItem(to: \.alertItem, on: parentViewModel)
-                .map { result, description in
+                .map { result, description, focus in
                     AttachmentUploadViewModel(
                         data: result.data,
                         mimeType: result.mimeType,
                         description: description,
+                        focus: focus,
                         parentViewModel: parentViewModel
                     )
                 }

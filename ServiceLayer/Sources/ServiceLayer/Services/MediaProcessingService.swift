@@ -5,7 +5,9 @@ import Combine
 import CoreGraphics
 import Foundation
 import ImageIO
+import Mastodon
 import os
+import Vision
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -32,8 +34,16 @@ enum AltTextError: String, Error {
     case iptcDescription
 }
 
+/// Possible errors when finding the focus of an image.
+/// Mostly for debugging. as they're all recoverable by just not providing a focus.
+enum FocusError: String, Error {
+    case noObservations
+    case noObjects
+}
+
 public enum MediaProcessingService {}
 
+// TODO: (Vyr) merge all these so they only need to make one temporary copy of the file.
 public extension MediaProcessingService {
     static func dataAndMimeType(itemProvider: NSItemProvider) -> AnyPublisher<(data: Data, mimeType: String), Error> {
         let registeredTypes = itemProvider.registeredTypeIdentifiers.compactMap(UTType.init)
@@ -76,6 +86,21 @@ public extension MediaProcessingService {
                         }
                     }
                 }
+                .replaceError(with: nil)
+                .eraseToAnyPublisher()
+        } else {
+            return Just(nil)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    /// Get focal point from an image.
+    /// If there's an error or it's not a type we understand, return `nil`.
+    static func focus(itemProvider: NSItemProvider) -> AnyPublisher<Attachment.Meta.Focus?, Never> {
+        let registeredTypes = itemProvider.registeredTypeIdentifiers.compactMap(UTType.init)
+        if registeredTypes.contains(where: { $0.conforms(to: .image) }) {
+            return Self.loadFileRepresentation(itemProvider, for: .image)
+                .tryMap(Self.cvFocus(url:))
                 .replaceError(with: nil)
                 .eraseToAnyPublisher()
         } else {
@@ -245,6 +270,37 @@ private extension MediaProcessingService {
         }
 
         return nil
+    }
+
+    /// Use Core Vision to determine an interest-based focal point for the image.
+    static func cvFocus(url: URL) throws -> Attachment.Meta.Focus? {
+        let requestHandler = VNImageRequestHandler(url: url, options: [:])
+//        let request = VNGenerateAttentionBasedSaliencyImageRequest()
+        let request = VNGenerateObjectnessBasedSaliencyImageRequest()
+        try requestHandler.perform([request])
+        guard let observation = request.results?.first as? VNSaliencyImageObservation else {
+            throw FocusError.noObservations
+        }
+
+//        guard let regionOfInterest = observation.salientObjects?.first.boundingBox else {
+//            throw FocusError.noObjects
+//        }
+
+        var regionOfInterest = CGRect.null
+        for object in observation.salientObjects ?? [] {
+            regionOfInterest = regionOfInterest.union(object.boundingBox)
+            break
+        }
+        if regionOfInterest.isNull {
+            throw FocusError.noObjects
+        }
+
+        // Vision's bounding boxes are [0, 1] × [0, 1], while Mastodon's are [-1, 1] × [-1, 1].
+        // See https://docs.joinmastodon.org/api/guidelines/#focal-points
+        return .init(
+            x: 2 * regionOfInterest.midX - 1,
+            y: 2 * regionOfInterest.midY - 1
+        )
     }
 
     /// Run `operation` on a temporary copy of the contents of file URL `url`.
