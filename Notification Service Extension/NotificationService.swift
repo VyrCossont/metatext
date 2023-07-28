@@ -19,7 +19,8 @@ final class NotificationService: UNNotificationServiceExtension {
 
     override func didReceive(
         _ request: UNNotificationRequest,
-        withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
+        withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
+    ) {
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
 
@@ -59,19 +60,48 @@ final class NotificationService: UNNotificationServiceExtension {
             return
         }
 
-        Self.attachment(imageURL: imageURL)
-            .map { [$0] }
-            .replaceError(with: [])
-            .handleEvents(receiveOutput: { bestAttemptContent.attachments = $0 })
-            .zip(parsingService.title(pushNotification: pushNotification, identityId: identityId)
-                    .replaceError(with: pushNotification.title)
-                    .handleEvents(receiveOutput: { bestAttemptContent.title = $0 }))
-            .sink { _ in contentHandler(bestAttemptContent) }
+        let setAttachment = Self.attachment(imageURL: imageURL)
+            .handleEvents(receiveOutput: { attachment in
+                bestAttemptContent.attachments = [attachment]
+            })
+            .ignoreOutput()
+
+        let setTitleAndThreadIdentifier = parsingService
+            .apiNotification(
+                pushNotification: pushNotification,
+                identityId: identityId
+            )
+            .handleEvents(receiveOutput: { apiNotification in
+                if let title = parsingService.title(
+                    apiNotification: apiNotification,
+                    identityId: identityId
+                ) {
+                    bestAttemptContent.title = title
+                }
+
+                if let threadIdentifier = parsingService.threadIdentifier(
+                    apiNotification: apiNotification,
+                    identityId: identityId,
+                    appPreferences: appPreferences
+                ) {
+                    bestAttemptContent.threadIdentifier = threadIdentifier
+                }
+            })
+            .ignoreOutput()
+
+        setAttachment
+            .zip(setTitleAndThreadIdentifier)
+            .sink(
+                receiveCompletion: { _ in
+                    contentHandler(bestAttemptContent)
+                },
+                receiveValue: { _ in }
+            )
             .store(in: &cancellables)
     }
 
     override func serviceExtensionTimeWillExpire() {
-        if let contentHandler = contentHandler, let bestAttemptContent =  bestAttemptContent {
+        if let contentHandler = contentHandler, let bestAttemptContent = bestAttemptContent {
             contentHandler(bestAttemptContent)
         }
     }

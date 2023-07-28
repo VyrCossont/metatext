@@ -58,52 +58,79 @@ public extension PushNotificationParsingService {
         return Result { try secrets.getUsername().appending("@").appending(secrets.getInstanceURL().host ?? "") }
     }
 
-    func title(pushNotification: PushNotification, identityId: Identity.Id) -> AnyPublisher<String, Error> {
-        switch pushNotification.notificationType {
-        case .poll, .status:
-            let secrets = Secrets(identityId: identityId, keychain: environment.keychain)
-            let instanceURL: URL
+    /// Get more notification information from the notification API.
+    func apiNotification(pushNotification: PushNotification, identityId: Identity.Id) -> AnyPublisher<MastodonNotification, Error> {
+        let secrets = Secrets(identityId: identityId, keychain: environment.keychain)
+        let instanceURL: URL
 
-            do {
-                instanceURL = try secrets.getInstanceURL()
-            } catch {
-                return Fail(error: error).eraseToAnyPublisher()
-            }
+        do {
+            instanceURL = try secrets.getInstanceURL()
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
 
-            let mastodonAPIClient = MastodonAPIClient(
-                session: .shared,
-                instanceURL: instanceURL,
-                apiCapabilities: secrets.getAPICapabilities()
+        let mastodonAPIClient = MastodonAPIClient(
+            session: .shared,
+            instanceURL: instanceURL,
+            apiCapabilities: secrets.getAPICapabilities()
+        )
+
+        mastodonAPIClient.accessToken = pushNotification.accessToken
+
+        let endpoint = NotificationEndpoint.notification(id: String(pushNotification.notificationId))
+
+        return mastodonAPIClient.request(endpoint)
+    }
+
+    /// Return a more detailed title, if applicable.
+    func title(
+        apiNotification: MastodonNotification,
+        identityId: Identity.Id
+    ) -> String? {
+        switch apiNotification.type {
+        case .status:
+            return String.localizedStringWithFormat(
+                NSLocalizedString("notification.status-%@", comment: ""),
+                apiNotification.account.displayName
             )
 
-            mastodonAPIClient.accessToken = pushNotification.accessToken
+        case .poll:
+            let secrets = Secrets(identityId: identityId, keychain: environment.keychain)
 
-            let endpoint = NotificationEndpoint.notification(id: String(pushNotification.notificationId))
+            guard let accountId = try? secrets.getAccountId() else {
+                return NSLocalizedString("notification.poll.unknown", comment: "")
+            }
 
-            return mastodonAPIClient.request(endpoint)
-                .map {
-                    switch pushNotification.notificationType {
-                    case .status:
-                        return String.localizedStringWithFormat(
-                            NSLocalizedString("notification.status-%@", comment: ""),
-                            $0.account.displayName)
-                    case .poll:
-                        guard let accountId = try? secrets.getAccountId() else {
-                            return NSLocalizedString("notification.poll.unknown", comment: "")
-                        }
+            if apiNotification.account.id == accountId {
+                return NSLocalizedString("notification.poll.own", comment: "")
+            } else {
+                return NSLocalizedString("notification.poll", comment: "")
+            }
 
-                        if $0.account.id == accountId {
-                            return NSLocalizedString("notification.poll.own", comment: "")
-                        } else {
-                            return NSLocalizedString("notification.poll", comment: "")
-                        }
-                    default:
-                        return pushNotification.title
-                    }
-                }
-                .eraseToAnyPublisher()
         default:
-            return Just(pushNotification.title).setFailureType(to: Error.self).eraseToAnyPublisher()
+            return nil
+        }
+    }
+
+    /// Generate a grouping identifier, if applicable.
+    func threadIdentifier(
+        apiNotification: MastodonNotification,
+        identityId: Identity.Id,
+        appPreferences: AppPreferences
+    ) -> String? {
+        guard appPreferences.notificationGrouping else { return nil }
+
+        switch apiNotification.type {
+        case .follow:
+            return "\(identityId):\(apiNotification.type)"
+
+        case .favourite, .reblog:
+            guard let status = apiNotification.status else { return nil }
+
+            return "\(identityId):\(apiNotification.type):\(status.id)"
+
+        default:
+            return nil
         }
     }
 }
