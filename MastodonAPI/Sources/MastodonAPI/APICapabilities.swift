@@ -31,7 +31,7 @@ public struct APICapabilities: Encodable {
         let version = nodeinfoSoftware.version
             .split(separator: " ", maxSplits: 1)
             .first
-            .flatMap { Semver(String($0)) }
+            .flatMap { Semver(String($0)) ?? Self.relaxedSemver($0) }
         self.init(
             flavor: .init(rawValue: nodeinfoSoftware.name),
             version: version,
@@ -49,6 +49,38 @@ public struct APICapabilities: Encodable {
             nodeinfoSoftware: nodeInfo.software,
             compatibilityMode: compatibilityMode
         )
+    }
+
+    /// Pull the first three numbers off the front and hope it's good enough.
+    private static func relaxedSemver(_ s: Substring) -> Semver {
+        let trimmed: Substring
+        if #available(iOS 16.0, *) {
+            trimmed = s.trimmingPrefix("v")
+        } else {
+            trimmed = s.drop(while: { $0 == "v" })
+        }
+
+        let leadingNumericComponents = trimmed
+            .split(maxSplits: 3, whereSeparator: { !$0.isNumber })
+            .prefix(upTo: 3)
+            .compactMap { Int.init($0) }
+
+        var major = 0
+        if leadingNumericComponents.count > 0 {
+            major = leadingNumericComponents[0]
+        }
+
+        var minor = 0
+        if leadingNumericComponents.count > 1 {
+            minor = leadingNumericComponents[1]
+        }
+
+        var patch = 0
+        if leadingNumericComponents.count > 2 {
+            patch = leadingNumericComponents[2]
+        }
+
+        return Semver(major: major, minor: minor, patch: patch)
     }
 }
 
