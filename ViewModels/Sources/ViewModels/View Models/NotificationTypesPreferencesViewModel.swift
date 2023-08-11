@@ -3,11 +3,12 @@
 import Combine
 import Foundation
 import Mastodon
+import MastodonAPI
 import ServiceLayer
 
 public final class NotificationTypesPreferencesViewModel: ObservableObject {
     @Published public var pushSubscriptionAlerts: PushSubscription.Alerts
-    @Published public var pushSubscriptionPolicy: PushSubscription.Policy
+    @Published public var pushSubscriptionPolicy: PushSubscription.Policy?
     @Published public var alertItem: AlertItem?
     public let identityContext: IdentityContext
 
@@ -46,10 +47,15 @@ public final class NotificationTypesPreferencesViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
+
+    /// Does this backend support push notification policies?
+    public var canUpdateWithPolicy: Bool {
+        PushSubscriptionEndpoint.update(alerts: .initial, policy: .all).canCallWith(identityContext.apiCapabilities)
+    }
 }
 
 private extension NotificationTypesPreferencesViewModel {
-    func update(alerts: PushSubscription.Alerts, policy: PushSubscription.Policy) {
+    func update(alerts: PushSubscription.Alerts, policy: PushSubscription.Policy?) {
         guard alerts != identityContext.identity.pushSubscriptionAlerts
             || policy != identityContext.identity.pushSubscriptionPolicy
         else { return }

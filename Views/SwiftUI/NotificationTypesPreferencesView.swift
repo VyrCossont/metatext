@@ -54,16 +54,18 @@ struct NotificationTypesPreferencesView: View {
                 }
             }
 
-            Section {
-                Picker(
-                    "preferences.notification-policy.picker-title",
-                    selection: $viewModel.pushSubscriptionPolicy
-                ) {
-                    ForEach(PushSubscription.Policy.allCasesExceptUnknown) { policy in
-                        Text(policy.localizedStringKey).tag(policy)
+            if viewModel.canUpdateWithPolicy {
+                Section {
+                    Picker(
+                        "preferences.notification-policy.picker-title",
+                        selection: $viewModel.pushSubscriptionPolicy
+                    ) {
+                        ForEach(PushSubscription.Policy.allCasesExceptUnknown) { policy in
+                            Text(policy.localizedStringKey).tag(policy)
+                        }
                     }
+                    .pickerStyle(.inline)
                 }
-                .pickerStyle(.inline)
             }
         }
         .navigationTitle("preferences.notifications")

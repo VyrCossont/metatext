@@ -46,7 +46,8 @@ public struct PushSubscription: Codable {
 
     public let endpoint: UnicodeURL
     public let alerts: Alerts
-    public let policy: Policy
+    /// Only present on Mastodon.
+    public let policy: Policy?
     public let serverKey: String
 }
 

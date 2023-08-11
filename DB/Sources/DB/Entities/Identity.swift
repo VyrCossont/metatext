@@ -14,7 +14,7 @@ public struct Identity: Codable, Hashable, Identifiable {
     public let account: Identity.Account?
     public let lastRegisteredDeviceToken: Data?
     public let pushSubscriptionAlerts: PushSubscription.Alerts
-    public let pushSubscriptionPolicy: PushSubscription.Policy
+    public let pushSubscriptionPolicy: PushSubscription.Policy?
 }
 
 public extension Identity {

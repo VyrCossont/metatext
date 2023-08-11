@@ -123,7 +123,7 @@ public extension IdentityDatabase {
 
     func updatePushSubscription(
         alerts: PushSubscription.Alerts,
-        policy: PushSubscription.Policy,
+        policy: PushSubscription.Policy?,
         deviceToken: Data? = nil,
         id: Identity.Id
     ) -> AnyPublisher<Never, Error> {
@@ -137,7 +137,7 @@ public extension IdentityDatabase {
                 .updateAll(
                     $0,
                     IdentityRecord.Columns.pushSubscriptionAlerts.set(to: alertsData),
-                    IdentityRecord.Columns.pushSubscriptionPolicy.set(to: policy.rawValue)
+                    IdentityRecord.Columns.pushSubscriptionPolicy.set(to: policy?.rawValue)
                 )
 
             if let deviceToken = deviceToken {

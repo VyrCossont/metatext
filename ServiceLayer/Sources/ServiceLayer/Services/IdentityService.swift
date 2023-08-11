@@ -303,7 +303,7 @@ public extension IdentityService {
     func createPushSubscription(
         deviceToken: Data,
         alerts: PushSubscription.Alerts,
-        policy: PushSubscription.Policy
+        policy: PushSubscription.Policy?
     ) -> AnyPublisher<Never, Error> {
         let publicKey: String
         let auth: String
@@ -319,28 +319,56 @@ public extension IdentityService {
             .appendingPathComponent(deviceToken.base16EncodedString())
             .appendingPathComponent(id.uuidString)
 
-        return mastodonAPIClient.request(
-            PushSubscriptionEndpoint.create(
-                endpoint: endpoint,
-                publicKey: publicKey,
-                auth: auth,
-                alerts: alerts,
-                policy: policy
+        return mastodonAPIClient
+            .request(
+                PushSubscriptionEndpoint.create(
+                    endpoint: endpoint,
+                    publicKey: publicKey,
+                    auth: auth,
+                    alerts: alerts,
+                    policy: canUpdateWithPolicy ? policy : nil
+                )
             )
-        )
-        .map { ($0.alerts, $0.policy, deviceToken, id) }
+            .handleEvents(
+                receiveOutput: { output in
+                    print(output)
+                },
+                receiveCompletion: { completion in
+                    print(completion)
+                }
+            )
+            .map { ($0.alerts, $0.policy, deviceToken, id) }
             .flatMap(identityDatabase.updatePushSubscription(alerts:policy:deviceToken:id:))
             .eraseToAnyPublisher()
     }
 
     func updatePushSubscription(
         alerts: PushSubscription.Alerts,
-        policy: PushSubscription.Policy
+        policy: PushSubscription.Policy?
     ) -> AnyPublisher<Never, Error> {
-        mastodonAPIClient.request(PushSubscriptionEndpoint.update(alerts: alerts, policy: policy))
+        mastodonAPIClient
+            .request(
+                PushSubscriptionEndpoint.update(
+                    alerts: alerts,
+                    policy: canUpdateWithPolicy ? policy : nil
+                )
+            )
+            .handleEvents(
+                receiveOutput: { output in
+                    print(output)
+                },
+                receiveCompletion: { completion in
+                    print(completion)
+                }
+            )
             .map { ($0.alerts, $0.policy, nil, id) }
             .flatMap(identityDatabase.updatePushSubscription(alerts:policy:deviceToken:id:))
             .eraseToAnyPublisher()
+    }
+
+    /// Does this backend support push notification policies?
+    private var canUpdateWithPolicy: Bool {
+        PushSubscriptionEndpoint.update(alerts: .initial, policy: .all).canCallWith(mastodonAPIClient.apiCapabilities)
     }
 
     func uploadAttachment(

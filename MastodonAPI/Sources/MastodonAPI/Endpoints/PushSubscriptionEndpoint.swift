@@ -11,12 +11,12 @@ public enum PushSubscriptionEndpoint {
         publicKey: String,
         auth: String,
         alerts: PushSubscription.Alerts,
-        policy: PushSubscription.Policy
+        policy: PushSubscription.Policy?
     )
     case read
     case update(
         alerts: PushSubscription.Alerts,
-        policy: PushSubscription.Policy
+        policy: PushSubscription.Policy?
     )
     case delete
 }
@@ -42,49 +42,74 @@ extension PushSubscriptionEndpoint: Endpoint {
     public var jsonBody: [String: Any]? {
         switch self {
         case let .create(endpoint, publicKey, auth, alerts, policy):
+            let subscription: [String: Any] = [
+                "endpoint": endpoint.absoluteString,
+                "keys": [
+                    "p256dh": publicKey,
+                    "auth": auth
+                ]
+            ]
+
+            var data: [String: Any] = [
+                "alerts": alerts.jsonBody
+            ]
+
+            if let policy = policy {
+                data["policy"] = policy.rawValue
+            }
+
             return [
-                "subscription": [
-                    "endpoint": endpoint.absoluteString,
-                    "keys": [
-                        "p256dh": publicKey,
-                        "auth": auth
-                    ]
-                ] as [String: Any],
-                "data": [
-                    "alerts": [
-                        "follow": alerts.follow,
-                        "favourite": alerts.favourite,
-                        "reblog": alerts.reblog,
-                        "mention": alerts.mention,
-                        "follow_request": alerts.followRequest,
-                        "poll": alerts.poll,
-                        "status": alerts.status,
-                        "update": alerts.update,
-                        "admin.sign_up": alerts.adminSignup,
-                        "admin.report": alerts.adminReport
-                    ],
-                    "policy": policy.rawValue
-                ] as [String: Any]
+                "subscription": subscription,
+                "data": data
             ]
         case let .update(alerts, policy):
+            var data: [String: Any] = [
+                "alerts": alerts.jsonBody
+            ]
+
+            if let policy = policy {
+                data["policy"] = policy.rawValue
+            }
+
             return [
-                "data": [
-                    "alerts": [
-                        "follow": alerts.follow,
-                        "favourite": alerts.favourite,
-                        "reblog": alerts.reblog,
-                        "mention": alerts.mention,
-                        "follow_request": alerts.followRequest,
-                        "poll": alerts.poll,
-                        "status": alerts.status,
-                        "update": alerts.update,
-                        "admin.sign_up": alerts.adminSignup,
-                        "admin.report": alerts.adminReport
-                    ],
-                    "policy": policy.rawValue
-                ] as [String: Any]
+                "data": data
             ]
         default: return nil
         }
+    }
+
+    public var requires: APICapabilityRequirements? {
+        switch self {
+        case .read,
+                .delete,
+                .create(_, _, _, _, policy: nil),
+                .update(_, policy: nil):
+            return .mastodonForks("2.4.0") | [
+                .fedibird: "0.1.0",
+                .pleroma: .assumeAvailable,
+                .akkoma: .assumeAvailable
+            ]
+        case .create, .update:
+            return .mastodonForks("3.4.0") | [
+                .fedibird: "0.1.0"
+            ]
+        }
+    }
+}
+
+private extension PushSubscription.Alerts {
+    var jsonBody: [String: Any] {
+        [
+            "follow": follow,
+            "favourite": favourite,
+            "reblog": reblog,
+            "mention": mention,
+            "follow_request": followRequest,
+            "poll": poll,
+            "status": status,
+            "update": update,
+            "admin.sign_up": adminSignup,
+            "admin.report": adminReport
+        ]
     }
 }

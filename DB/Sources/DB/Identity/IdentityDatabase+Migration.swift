@@ -91,6 +91,13 @@ extension IdentityDatabase {
             }
         }
 
+        migrator.registerMigration("1.7.4-push-subscription-policy-optional") { db in
+            try db.alter(table: "identityRecord") { t in
+                t.drop(column: "pushSubscriptionPolicy")
+                t.add(column: "pushSubscriptionPolicy", .text)
+            }
+        }
+
         return migrator
     }
 }
