@@ -96,32 +96,46 @@ private extension CompositionInputAccessoryView {
             autocompleteCollectionViewHeightConstraint
         ])
 
-        var attachmentActions = [
-            UIAction(
-                title: NSLocalizedString("compose.browse", comment: ""),
-                image: UIImage(systemName: "ellipsis")) { [weak self] _ in
-                guard let self = self else { return }
+        let attachPhotoFromFilesAction = UIAction(
+            title: NSLocalizedString("compose.browse", comment: ""),
+            image: UIImage(systemName: "ellipsis")) { [weak self] _ in
+            guard let self = self else { return }
 
-                self.parentViewModel.presentDocumentPicker(viewModel: self.viewModel)
-            },
-            UIAction(
-                title: NSLocalizedString("compose.photo-library", comment: ""),
-                image: UIImage(systemName: "rectangle.on.rectangle")) { [weak self] _ in
-                guard let self = self else { return }
+            self.parentViewModel.presentDocumentPicker(viewModel: self.viewModel)
+        }
 
-                self.parentViewModel.presentMediaPicker(viewModel: self.viewModel)
-            }
-        ]
+        let attachPhotoFromLibraryAction = UIAction(
+            title: NSLocalizedString("compose.photo-library", comment: ""),
+            image: UIImage(systemName: "rectangle.on.rectangle")) { [weak self] _ in
+            guard let self = self else { return }
 
-        #if !IS_SHARE_EXTENSION
-        attachmentActions.insert(UIAction(
+            self.parentViewModel.presentMediaPicker(viewModel: self.viewModel)
+        }
+
+        let attachPhotoFromCameraAction = UIAction(
             title: NSLocalizedString("compose.take-photo-or-video", comment: ""),
             image: UIImage(systemName: "camera.fill")) { [weak self] _ in
             guard let self = self else { return }
 
             self.parentViewModel.presentCamera(viewModel: self.viewModel)
-        },
-        at: 1)
+        }
+
+        let attachPollAction = UIAction(
+            title: NSLocalizedString("compose.poll", comment: ""),
+            image: UIImage(systemName: "chart.bar.xaxis")) { [weak self] _ in
+            guard let self = self else { return }
+
+            self.viewModel.displayPoll.toggle()
+        }
+
+        var attachmentActions = [
+            attachPollAction,
+            attachPhotoFromLibraryAction,
+            attachPhotoFromFilesAction
+        ]
+
+        #if !IS_SHARE_EXTENSION
+        attachmentActions.insert(attachPhotoFromCameraAction, at: 2)
         #endif
 
         let attachmentButton = UIBarButtonItem(
@@ -130,12 +144,6 @@ private extension CompositionInputAccessoryView {
 
         attachmentButton.accessibilityLabel =
             NSLocalizedString("compose.attachments-button.accessibility-label", comment: "")
-
-        let pollButton = UIBarButtonItem(
-            image: UIImage(systemName: "chart.bar.xaxis"),
-            primaryAction: UIAction { [weak self] _ in self?.viewModel.displayPoll.toggle() })
-
-        pollButton.accessibilityLabel = NSLocalizedString("compose.poll-button.accessibility-label", comment: "")
 
         let visibilityButton = UIBarButtonItem(
             image: UIImage(systemName: parentViewModel.visibility.systemImageName),
@@ -214,8 +222,6 @@ private extension CompositionInputAccessoryView {
         toolbar.items = [
             attachmentButton,
             UIBarButtonItem.fixedSpace(.defaultSpacing),
-            pollButton,
-            UIBarButtonItem.fixedSpace(.defaultSpacing),
             visibilityButton,
             UIBarButtonItem.fixedSpace(.defaultSpacing),
             contentWarningButton,
@@ -232,9 +238,17 @@ private extension CompositionInputAccessoryView {
             .sink { attachmentButton.isEnabled = $0 }
             .store(in: &cancellables)
 
+        // TODO: (Vyr) poll item should be disabled if media is attached and otherwise checked and uncheckable
+        //  Converse for media items.
         viewModel.$attachmentViewModels
             .combineLatest(viewModel.$attachmentUploadViewModels)
-            .sink { pollButton.isEnabled = $0.isEmpty && $1.isEmpty }
+            .sink {
+                if $0.isEmpty && $1.isEmpty {
+                    attachPollAction.state = .off
+                } else {
+                    attachPollAction.state = .on
+                }
+            }
             .store(in: &cancellables)
 
         viewModel.$remainingCharacters.sink {
