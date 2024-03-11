@@ -2,6 +2,7 @@
 
 import UIKit
 
+@MainActor
 final class ZoomTransitionController: NSObject {
     var isInteractive = false
 
@@ -31,7 +32,6 @@ extension ZoomTransitionController: UIViewControllerTransitioningDelegate {
         using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         interactionController(animator: animator)
     }
-
 }
 
 extension ZoomTransitionController: UINavigationControllerDelegate {

@@ -2,6 +2,7 @@
 
 import UIKit
 
+@MainActor
 final class ZoomDismissalInteractionController: NSObject {
     var transitionContext: UIViewControllerContextTransitioning?
     var animator: UIViewControllerAnimatedTransitioning?
