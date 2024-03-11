@@ -3,6 +3,8 @@
 import Combine
 import Foundation
 
+/// Making this correct for strict concurrency is an open problem:
+/// https://forums.swift.org/t/how-to-correctly-convert-from-an-async-function-to-combine-or-any-other-framework/64009
 public extension Future {
     convenience init(async closure: @Sendable @escaping () async -> Output) {
         self.init { promise in
