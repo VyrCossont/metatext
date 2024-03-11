@@ -43,6 +43,7 @@ extension CollectionItem {
         }
     }
 
+    @MainActor
     func estimatedHeight(width: CGFloat, identityContext: IdentityContext) -> CGFloat {
         switch self {
         case let .status(status, configuration, _):
