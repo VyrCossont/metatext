@@ -25,9 +25,17 @@ let package = Package(
     targets: [
         .target(
             name: "Mastodon",
-            dependencies: ["AppMetadata", "AppUrls", "Siren", "SwiftSoup"]),
+            dependencies: ["AppMetadata", "AppUrls", "Siren", "SwiftSoup"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
         .testTarget(
             name: "MastodonTests",
-            dependencies: ["Mastodon"])
+            dependencies: ["Mastodon"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        )
     ]
 )

@@ -44,9 +44,18 @@ let package = Package(
             dependencies: [
                 "ServiceLayer",
                 .product(name: "MastodonAPIStubs", package: "MastodonAPI"),
-                .product(name: "MockKeychain", package: "Keychain")]),
+                .product(name: "MockKeychain", package: "Keychain"),
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
         .testTarget(
             name: "ServiceLayerTests",
-            dependencies: ["CombineExpectations", "ServiceLayerMocks"])
+            dependencies: ["CombineExpectations", "ServiceLayerMocks"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        )
     ]
 )

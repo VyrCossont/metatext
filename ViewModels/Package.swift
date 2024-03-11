@@ -24,12 +24,24 @@ let package = Package(
     targets: [
         .target(
             name: "ViewModels",
-            dependencies: ["AppUrls", "ServiceLayer"]),
+            dependencies: ["AppUrls", "ServiceLayer"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
         .target(
             name: "PreviewViewModels",
-            dependencies: ["ViewModels", .product(name: "ServiceLayerMocks", package: "ServiceLayer")]),
+            dependencies: ["ViewModels", .product(name: "ServiceLayerMocks", package: "ServiceLayer")],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
         .testTarget(
             name: "ViewModelsTests",
-            dependencies: ["CombineExpectations", "PreviewViewModels"])
+            dependencies: ["CombineExpectations", "PreviewViewModels"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
     ]
 )

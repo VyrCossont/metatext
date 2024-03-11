@@ -27,12 +27,18 @@ let package = Package(
             name: "Siren",
             dependencies: [
                 "SwiftSoup"
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .testTarget(
             name: "SirenTests",
             dependencies: [
                 "Siren"
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         )
     ]

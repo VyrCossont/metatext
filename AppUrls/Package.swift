@@ -13,9 +13,17 @@ let package = Package(
     targets: [
         .target(
             name: "AppUrls",
-            dependencies: []),
+            dependencies: [],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
         .testTarget(
             name: "AppUrlsTests",
-            dependencies: ["AppUrls"])
+            dependencies: ["AppUrls"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        )
     ]
 )

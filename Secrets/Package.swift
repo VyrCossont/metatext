@@ -20,9 +20,17 @@ let package = Package(
     targets: [
         .target(
             name: "Secrets",
-            dependencies: ["Base16", "Keychain"]),
+            dependencies: ["Base16", "Keychain"],
+            swiftSettings: [
+              .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
         .testTarget(
             name: "SecretsTests",
-            dependencies: ["Secrets"])
+            dependencies: ["Secrets"],
+            swiftSettings: [
+              .enableExperimentalFeature("StrictConcurrency")
+            ]
+        )
     ]
 )

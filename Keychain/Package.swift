@@ -20,12 +20,24 @@ let package = Package(
     targets: [
         .target(
             name: "Keychain",
-            dependencies: []),
+            dependencies: [],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
         .target(
             name: "MockKeychain",
-            dependencies: ["Keychain"]),
+            dependencies: ["Keychain"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
         .testTarget(
             name: "KeychainTests",
-            dependencies: ["MockKeychain"])
+            dependencies: ["MockKeychain"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        )
     ]
 )

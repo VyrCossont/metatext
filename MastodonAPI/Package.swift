@@ -30,19 +30,35 @@ let package = Package(
     targets: [
         .target(
             name: "MastodonAPI",
-            dependencies: ["AppMetadata", "CombineInterop", "HTTP", "Mastodon", "Semver"]),
+            dependencies: ["AppMetadata", "CombineInterop", "HTTP", "Mastodon", "Semver"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
         .target(
             name: "MastodonAPIStubs",
             dependencies: ["MastodonAPI", .product(name: "Stubbing", package: "HTTP")],
-            resources: [.process("Resources")]),
+            resources: [.process("Resources")],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
         .testTarget(
             name: "MastodonAPITests",
-            dependencies: ["MastodonAPIStubs"]),
+            dependencies: ["MastodonAPIStubs"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
         .executableTarget(
             name: "MastodonAPITool",
             dependencies: [
                 "MastodonAPI",
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
-            ])
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
     ]
 )

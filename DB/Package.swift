@@ -27,10 +27,17 @@ let package = Package(
                 .product(name: "GRDB", package: "GRDB.swift"),
                 "Mastodon",
                 "Secrets"
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .testTarget(
             name: "DBTests",
-            dependencies: ["DB"])
+            dependencies: ["DB"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
     ]
 )

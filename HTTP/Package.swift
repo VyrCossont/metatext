@@ -20,12 +20,24 @@ let package = Package(
     targets: [
         .target(
             name: "HTTP",
-            dependencies: []),
+            dependencies: [],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
         .target(
             name: "Stubbing",
-            dependencies: ["HTTP"]),
+            dependencies: ["HTTP"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
         .testTarget(
             name: "HTTPTests",
-            dependencies: ["HTTP"])
+            dependencies: ["HTTP"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        )
     ]
 )
