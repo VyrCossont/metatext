@@ -7,15 +7,6 @@ import os
 
 // https://github.com/groue/GRDB.swift/blob/master/Documentation/SharingADatabase.md
 
-#if DEBUG
-private let logger = Logger(
-    subsystem: AppMetadata.bundleIDBase,
-    category: "SQL"
-)
-#else
-private let logger = Logger(.disabled)
-#endif
-
 extension DatabasePool {
     class func withFileCoordinator(url: URL,
                                    migrator: DatabaseMigrator,
@@ -33,8 +24,16 @@ extension DatabasePool {
                 configuration.defaultTransactionKind = .immediate
                 configuration.observesSuspensionNotifications = true
                 configuration.prepareDatabase { db in
-                    // Traced SQL statements only contain value placeholders, not actual values, and can be public.
-                    db.trace { logger.trace("\($0, privacy: .public)") }
+#if DEBUG
+                    db.trace {
+                        Logger(
+                            subsystem: AppMetadata.bundleIDBase,
+                            category: "SQL"
+                        )
+                        // Traced SQL statements only contain value placeholders, not actual values, and can be public.
+                        .trace("\($0, privacy: .public)")
+                    }
+#endif
 
                     try db.usePassphrase(passphrase())
                     try db.execute(sql: "PRAGMA cipher_plaintext_header_size = 32")
