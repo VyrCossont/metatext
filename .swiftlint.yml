@@ -10,3 +10,12 @@ file_length:
   warning: 500
   error: 1000
   ignore_comment_only_lines: true
+
+trailing_comma:
+  mandatory_comma: true
+
+# In this codebase:
+# - TODO means we plan to do it in the future and can be committed
+# - FIXME means that file should not be committed
+todo:
+  only: [FIXME]
