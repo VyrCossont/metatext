@@ -2,13 +2,10 @@
 
 import Foundation
 import HTTP
-#if canImport(UIKit)
 import UIKit
-#endif
 
 /// Wraps errors for display to the user.
-/// Currently also enriches errors with metadata and encodes them to JSON for manual reporting.
-public struct AlertItem: Identifiable, Encodable {
+public struct AlertItem: Identifiable {
     public let id = UUID()
     public let error: Error
     private let alertLocation: DebugLocation
@@ -38,30 +35,11 @@ public struct AlertItem: Identifiable, Encodable {
         case error
     }
 
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-
-        try container.encode(alertLocation, forKey: .alertLocation)
-
-        try container.encode(title, forKey: .title)
-        try container.encode(message, forKey: .message)
-
-        try container.encode(String(describing: type(of: error)), forKey: .type)
-        if let encodableError = error as? any Encodable {
-            try container.encode(encodableError, forKey: .error)
-        }
-
-        try container.encode(App(), forKey: .app)
-
-        #if canImport(UIKit)
-        try container.encode(System(), forKey: .system)
-        #endif
-    }
-
+    @MainActor
     public var json: Data? {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
-        guard let data = try? encoder.encode(self) else { return nil }
+        guard let data = try? encoder.encode(Report(self)) else { return nil }
 
         return data
     }
@@ -70,48 +48,85 @@ public struct AlertItem: Identifiable, Encodable {
         "\(title)\n\n\(message)".data(using: .utf8) ?? Data()
     }
 
-    /// Metadata about the app.
-    struct App: Encodable {
-        let bundle: String?
-        let version: String?
-        let build: String?
+    /// Enriches errors with metadata and encodes them to JSON for manual reporting.
+    private struct Report: Encodable {
+        let title: String
+        let message: String
+        let alertLocation: DebugLocation
+        let app: App
+        let system: System
+        let error: Error
 
-        init() {
-            self.bundle = Bundle.main.object(forInfoDictionaryKey: kCFBundleIdentifierKey as String) as? String
-            self.version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-            self.build = Bundle.main.object(forInfoDictionaryKey: kCFBundleVersionKey as String) as? String
+        @MainActor
+        init(_ alertItem: AlertItem) {
+            self.title = alertItem.title
+            self.message = alertItem.message
+            self.alertLocation = alertItem.alertLocation
+            self.app = App()
+            self.system = System()
+            self.error = alertItem.error
         }
-    }
 
-    #if canImport(UIKit)
-    /// Metadata about the device we're runnong on.
-    struct System: Encodable {
-        let name: String
-        let version: String
-        let model: String
-        let idiom: String
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
 
-        init() {
-            self.name = UIDevice.current.systemName
-            self.version = UIDevice.current.systemVersion
-            self.model = UIDevice.current.model
-            switch UIDevice.current.userInterfaceIdiom {
-            case .unspecified:
-                self.idiom = "unspecified"
-            case .phone:
-                self.idiom = "phone"
-            case .pad:
-                self.idiom = "pad"
-            case .tv:
-                self.idiom = "tv"
-            case .carPlay:
-                self.idiom = "carPlay"
-            case .mac:
-                self.idiom = "mac"
-            @unknown default:
-                self.idiom = "unknown"
+            try container.encode(title, forKey: .title)
+            try container.encode(message, forKey: .message)
+            try container.encode(alertLocation, forKey: .alertLocation)
+            try container.encode(app, forKey: .app)
+            try container.encode(system, forKey: .system)
+
+            try container.encode(String(describing: type(of: error)), forKey: .type)
+            if let encodableError = error as? any Encodable {
+                try container.encode(encodableError, forKey: .error)
+            }
+
+        }
+
+        /// Metadata about the app.
+        struct App: Encodable {
+            let bundle: String?
+            let version: String?
+            let build: String?
+
+            init() {
+                self.bundle = Bundle.main.object(forInfoDictionaryKey: kCFBundleIdentifierKey as String) as? String
+                self.version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+                self.build = Bundle.main.object(forInfoDictionaryKey: kCFBundleVersionKey as String) as? String
+            }
+        }
+
+        /// Metadata about the device we're runnong on.
+        struct System: Encodable {
+            let name: String
+            let version: String
+            let model: String
+            let idiom: String
+
+            @MainActor
+            init() {
+                self.name = UIDevice.current.systemName
+                self.version = UIDevice.current.systemVersion
+                self.model = UIDevice.current.model
+                switch UIDevice.current.userInterfaceIdiom {
+                case .unspecified:
+                    self.idiom = "unspecified"
+                case .phone:
+                    self.idiom = "phone"
+                case .pad:
+                    self.idiom = "pad"
+                case .tv:
+                    self.idiom = "tv"
+                case .carPlay:
+                    self.idiom = "carPlay"
+                case .mac:
+                    self.idiom = "mac"
+                case .vision:
+                    self.idiom = "vision"
+                @unknown default:
+                    self.idiom = "unknown"
+                }
             }
         }
     }
-    #endif
 }

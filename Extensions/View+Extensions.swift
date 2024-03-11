@@ -7,6 +7,7 @@ import UniformTypeIdentifiers
 import ViewModels
 
 extension View {
+    @MainActor
     func alertItem(_ alertItem: Binding<AlertItem?>) -> some View {
         alert(item: alertItem) {
             let copyButtonTitle: LocalizedStringKey
@@ -16,7 +17,7 @@ extension View {
                 copyItems = [
                     UTType.json.identifier: json,
                     // Intentional JSON as text: it's already pretty-printed and most apps can't handle a JSON paste.
-                    UTType.utf8PlainText.identifier: json
+                    UTType.utf8PlainText.identifier: json,
                 ]
             } else {
                 copyButtonTitle = "error.alert.copy-text"
