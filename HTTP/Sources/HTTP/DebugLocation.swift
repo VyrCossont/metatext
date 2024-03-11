@@ -4,7 +4,7 @@ import Foundation
 
 // TODO: (Vyr) if we keep this around, move it to the same crosscuts-everything level as AppUrls
 /// Source location. Used for debugging requests and request errors.
-public struct DebugLocation: Encodable {
+public struct DebugLocation: Encodable, Sendable {
     public let file: String
     public let line: Int
     public let function: String

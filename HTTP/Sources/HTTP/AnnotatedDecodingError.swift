@@ -46,7 +46,7 @@ public struct AnnotatedDecodingError: Error, AnnotatedError, LocalizedError, Enc
 
     public var failQuietly: Bool { false }
 
-    public enum EncodableDecodingError: Encodable {
+    public enum EncodableDecodingError: Encodable, Sendable {
         case dataCorrupted(context: EncodableContext)
         case keyNotFound(codingKey: String, context: EncodableContext)
         case typeMismatch(type: String, context: EncodableContext)
@@ -68,7 +68,7 @@ public struct AnnotatedDecodingError: Error, AnnotatedError, LocalizedError, Enc
         }
     }
 
-    public struct EncodableContext: Encodable {
+    public struct EncodableContext: Encodable, Sendable {
         public var codingPath: [String]
         public var debugDescription: String
         public var underlyingError: EncodableError?
@@ -80,7 +80,7 @@ public struct AnnotatedDecodingError: Error, AnnotatedError, LocalizedError, Enc
         }
     }
 
-    public struct EncodableError: Encodable {
+    public struct EncodableError: Encodable, Sendable {
         public var type: String
         public var localizedDescription: String
 

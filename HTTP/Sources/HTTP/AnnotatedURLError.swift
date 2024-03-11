@@ -61,7 +61,7 @@ public struct AnnotatedURLError: Error, AnnotatedError, LocalizedError, Encodabl
         }
     }
 
-    public enum Name: String, Encodable {
+    public enum Name: String, Encodable, Sendable {
         case unknown
         case cancelled
         case badURL
@@ -215,7 +215,7 @@ public struct AnnotatedURLError: Error, AnnotatedError, LocalizedError, Encodabl
         }
     }
 
-    public enum BackgroundTaskCancelledReason: String, Encodable {
+    public enum BackgroundTaskCancelledReason: String, Encodable, Sendable {
         case userForceQuitApplication
         case backgroundUpdatesDisabled
         case insufficientSystemResources
@@ -234,7 +234,7 @@ public struct AnnotatedURLError: Error, AnnotatedError, LocalizedError, Encodabl
         }
     }
 
-    public enum NetworkUnavailableReason: String, Encodable {
+    public enum NetworkUnavailableReason: String, Encodable, Sendable {
         case cellular
         case constrained
         case expensive

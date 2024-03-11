@@ -103,7 +103,7 @@ public struct HTTPError: Error, AnnotatedError, LocalizedError, Encodable {
         }
     }
 
-    public enum Reason: String, Encodable {
+    public enum Reason: String, Encodable, Sendable {
         case nonHTTPURLResponse
         case invalidStatusCode
     }

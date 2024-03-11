@@ -2,7 +2,7 @@
 
 import Foundation
 
-public protocol Target {
+public protocol Target: Sendable {
     var baseURL: URL { get }
     var pathComponents: [String] { get }
     var method: HTTPMethod { get }
@@ -54,7 +54,7 @@ public extension Target {
 }
 
 public protocol DecodableTarget: Target {
-    associatedtype ResultType: Decodable
+    associatedtype ResultType: Decodable & Sendable
     var decoder: JSONDecoder { get }
 }
 

@@ -2,7 +2,7 @@
 
 import Foundation
 
-public enum MultipartFormValue {
+public enum MultipartFormValue: Sendable {
     case string(String)
     case data(Data, filename: String, mimeType: String)
 }
