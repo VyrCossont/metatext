@@ -2,7 +2,7 @@
 
 import Foundation
 
-public enum ProfileCollection: String, Codable, CaseIterable {
+public enum ProfileCollection: String, Codable, CaseIterable, Sendable {
     case statuses
     case statusesAndReplies
     case statusesAndBoosts

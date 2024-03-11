@@ -3,7 +3,7 @@
 import Foundation
 import Mastodon
 
-public struct Identity: Codable, Hashable, Identifiable {
+public struct Identity: Codable, Hashable, Identifiable, Sendable {
     public let id: Id
     public let url: URL
     public let authenticated: Bool
@@ -21,7 +21,7 @@ public extension Identity {
     typealias Id = UUID
 
     /// Summary version of `Mastodon.Instance` that should be available anywhere an identity is.
-    struct Instance: Codable, Hashable {
+    struct Instance: Codable, Hashable, Sendable {
         /// For Mastodon servers, this is the same value as `LOCAL_DOMAIN`,
         /// not `WEB_DOMAIN`, and should not be used to construct API calls or web GUI URLs.
         ///
@@ -46,7 +46,7 @@ public extension Identity {
         public let maxReactions: Int?
     }
 
-    struct Account: Codable, Hashable {
+    struct Account: Codable, Hashable, Sendable {
         public let id: Mastodon.Account.Id
         public let identityId: Identity.Id
         public let username: String
@@ -60,7 +60,7 @@ public extension Identity {
         public let followRequestCount: Int
     }
 
-    struct Preferences: Codable, Hashable {
+    struct Preferences: Codable, Hashable, Sendable {
         @DecodableDefault.True public var useServerPostingReadingPreferences
         @DecodableDefault.StatusVisibilityPublic public var postingDefaultVisibility: Status.Visibility
         @DecodableDefault.False public var postingDefaultSensitive
@@ -70,7 +70,7 @@ public extension Identity {
         public var tintColor: TintColor?
 
         // swiftlint:disable:next nesting
-        public enum TintColor: String, CaseIterable, Identifiable, Codable {
+        public enum TintColor: String, CaseIterable, Identifiable, Codable, Sendable {
             case blue
             case brown
             case cyan

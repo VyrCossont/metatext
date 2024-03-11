@@ -3,7 +3,7 @@
 import Foundation
 import Mastodon
 
-public struct LoadMore: Hashable {
+public struct LoadMore: Hashable, Sendable {
     public let timeline: Timeline
     public let afterStatusId: Status.Id
     public let beforeStatusId: Status.Id

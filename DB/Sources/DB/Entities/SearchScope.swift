@@ -2,7 +2,7 @@
 
 import Foundation
 
-public enum SearchScope: Int, CaseIterable {
+public enum SearchScope: Int, CaseIterable, Sendable {
     case all
     case accounts
     case statuses

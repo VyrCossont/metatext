@@ -3,7 +3,7 @@
 import Foundation
 import Mastodon
 
-public enum Timeline: Hashable {
+public enum Timeline: Hashable, Sendable {
     case home
     case local
     case federated

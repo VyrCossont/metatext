@@ -4,7 +4,7 @@ import Foundation
 import GRDB
 import Mastodon
 
-protocol ContentDatabaseRecord: Codable, FetchableRecord, PersistableRecord {}
+protocol ContentDatabaseRecord: Codable, Sendable, FetchableRecord, PersistableRecord {}
 
 extension ContentDatabaseRecord {
     public static func databaseJSONDecoder(for column: String) -> JSONDecoder {

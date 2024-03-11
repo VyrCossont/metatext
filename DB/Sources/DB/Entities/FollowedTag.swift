@@ -5,7 +5,7 @@ import GRDB
 import Mastodon
 
 /// A followed hashtag. We only store the name.
-public struct FollowedTag: ContentDatabaseRecord, Equatable {
+public struct FollowedTag: ContentDatabaseRecord, Equatable, Sendable {
     public let name: Tag.Name
 
     public init(name: Tag.Name) {

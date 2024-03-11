@@ -3,7 +3,7 @@
 import Foundation
 import Mastodon
 
-public enum CollectionItem: Hashable {
+public enum CollectionItem: Hashable, Sendable {
     case status(Status, StatusConfiguration, Relationship?)
     case loadMore(LoadMore)
     case account(Account, AccountConfiguration, Relationship?, [Account], Suggestion.Source?)
@@ -19,7 +19,7 @@ public enum CollectionItem: Hashable {
 public extension CollectionItem {
     typealias Id = String
 
-    struct StatusConfiguration: Hashable {
+    struct StatusConfiguration: Hashable, Sendable {
         public let showContentToggled: Bool
         public let showAttachmentsToggled: Bool
         public let isContextParent: Bool
@@ -45,7 +45,7 @@ public extension CollectionItem {
         }
     }
 
-    enum AccountConfiguration: Hashable {
+    enum AccountConfiguration: Hashable, Sendable {
         case withNote
         case withoutNote
         case followRequest

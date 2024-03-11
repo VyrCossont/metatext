@@ -3,7 +3,7 @@
 import Foundation
 import Mastodon
 
-public struct Profile: Codable, Hashable {
+public struct Profile: Codable, Hashable, Sendable {
     public let account: Account
     public let relationship: Relationship?
     public let familiarFollowers: [Account]

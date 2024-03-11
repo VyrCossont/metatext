@@ -2,6 +2,6 @@
 
 import Foundation
 
-public struct MoreResults: Hashable {
+public struct MoreResults: Hashable, Sendable {
     public let scope: SearchScope
 }

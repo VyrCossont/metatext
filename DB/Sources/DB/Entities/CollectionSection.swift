@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct CollectionSection: Hashable {
+public struct CollectionSection: Hashable, Sendable {
     public let items: [CollectionItem]
     public let searchScope: SearchScope?
 
