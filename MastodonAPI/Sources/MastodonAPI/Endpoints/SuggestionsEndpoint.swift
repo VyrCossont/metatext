@@ -27,7 +27,7 @@ extension SuggestionsEndpoint: Endpoint {
             .fedibird: "0.1.0",
             .calckey: "14.0.0-0",
             .firefish: "1.0.0",
-            .iceshrimp: "1.0.0"
+            .iceshrimp: "1.0.0",
         ]
     }
 

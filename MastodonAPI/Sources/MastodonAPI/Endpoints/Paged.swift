@@ -6,7 +6,7 @@ import Mastodon
 
 /// Endpoint wrapper that adds common paging parameters to an existing endpoint.
 /// - See: https://docs.joinmastodon.org/api/guidelines/#pagination
-public struct Paged<T: Endpoint> {
+public struct Paged<T: Endpoint>: Sendable {
     public let endpoint: T
     public let maxId: String?
     public let minId: String?
@@ -67,8 +67,8 @@ extension Paged: Endpoint {
 }
 
 /// Paged result consisting of a regular result plus paging info extracted from headers.
-public struct PagedResult<T: Decodable> {
-    public struct Info {
+public struct PagedResult<T: Decodable & Sendable>: Sendable {
+    public struct Info: Sendable {
         public let maxId: String?
         public let minId: String?
         public let sinceId: String?

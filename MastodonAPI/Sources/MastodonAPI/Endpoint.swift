@@ -3,7 +3,7 @@
 import Foundation
 import HTTP
 
-public protocol Endpoint {
+public protocol Endpoint: Sendable {
     associatedtype ResultType: Decodable
     var APIVersion: String { get }
     var context: [String] { get }

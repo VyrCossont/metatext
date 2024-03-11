@@ -9,7 +9,7 @@ public enum ResultsEndpoint {
 }
 
 public extension ResultsEndpoint {
-    struct Search {
+    struct Search: Sendable {
         public let query: String
         public let type: SearchType?
         public let excludeUnreviewed: Bool
@@ -37,7 +37,7 @@ public extension ResultsEndpoint {
 }
 
 public extension ResultsEndpoint.Search {
-    enum SearchType: String {
+    enum SearchType: String, Sendable {
         case accounts
         case hashtags
         case statuses

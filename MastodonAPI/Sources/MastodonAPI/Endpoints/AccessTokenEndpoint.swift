@@ -19,7 +19,7 @@ public enum AccessTokenEndpoint {
 }
 
 public extension AccessTokenEndpoint {
-    struct Registration {
+    struct Registration: Sendable {
         public var username = ""
         public var email = ""
         public var password = ""
@@ -76,7 +76,8 @@ extension AccessTokenEndpoint: Endpoint {
                 "client_id": clientId,
                 "client_secret": clientSecret,
                 "grant_type": grantType,
-                "scope": scopes]
+                "scope": scopes,
+            ]
 
             params["code"] = code
             params["username"] = username
@@ -90,7 +91,8 @@ extension AccessTokenEndpoint: Endpoint {
                 "email": registration.email,
                 "password": registration.password,
                 "locale": registration.locale,
-                "agreement": registration.agreement]
+                "agreement": registration.agreement,
+            ]
 
             if !registration.reason.isEmpty {
                 params["reason"] = registration.reason

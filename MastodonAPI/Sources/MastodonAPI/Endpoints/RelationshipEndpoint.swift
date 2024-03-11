@@ -100,7 +100,7 @@ extension RelationshipEndpoint: Endpoint {
                 .fedibird: "0.1.0",
                 .pleroma: .assumeAvailable,
                 .akkoma: .assumeAvailable,
-                .gotosocial: "0.11.0-0"
+                .gotosocial: "0.11.0-0",
             ]
         case .accountsMute, .accountsUnmute:
             return AccountsEndpoint.mutes.requires

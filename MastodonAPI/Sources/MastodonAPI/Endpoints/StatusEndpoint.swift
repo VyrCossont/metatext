@@ -28,7 +28,7 @@ public enum StatusEndpoint {
 }
 
 public extension StatusEndpoint {
-    struct Components {
+    struct Components: Sendable {
         public let inReplyToId: Status.Id?
         public let text: String
         public let spoilerText: String
@@ -181,12 +181,12 @@ extension StatusEndpoint: Endpoint {
             // Glitch PR #2221 reaction support must be detected using the instance API.
             return .features(.emojiReactions) | [
                 .firefish: "1.0.4-0",
-                .iceshrimp: "1.0.2"
+                .iceshrimp: "1.0.2",
             ]
         case .pleromaReact, .pleromaUnreact:
             return [
                 .pleroma: .assumeAvailable,
-                .akkoma: .assumeAvailable
+                .akkoma: .assumeAvailable,
             ]
         default:
             return nil

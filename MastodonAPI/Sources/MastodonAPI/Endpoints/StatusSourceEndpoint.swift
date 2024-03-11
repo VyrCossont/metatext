@@ -41,7 +41,7 @@ extension StatusSourceEndpoint: Endpoint {
     public var requires: APICapabilityRequirements? {
         .mastodonForks("3.5.0") | [
             .pleroma: .assumeAvailable,
-            .akkoma: .assumeAvailable
+            .akkoma: .assumeAvailable,
         ]
     }
 }

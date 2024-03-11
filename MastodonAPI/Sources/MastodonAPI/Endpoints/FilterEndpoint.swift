@@ -77,7 +77,8 @@ private extension FilterEndpoint {
             "phrase": phrase,
             "context": context.map(\.rawValue),
             "irreversible": irreversible,
-            "whole_word": wholeWord]
+            "whole_word": wholeWord,
+        ]
 
         if let expiresIn = expiresIn {
             params["expires_in"] = Int(expiresIn.timeIntervalSinceNow)

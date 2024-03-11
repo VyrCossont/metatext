@@ -11,7 +11,7 @@ public enum ReportEndpoint {
 }
 
 public extension ReportEndpoint {
-    struct Elements {
+    struct Elements: Sendable {
         public let accountId: Account.Id
         public var statusIds = Set<Status.Id>()
         public var comment = ""
@@ -82,11 +82,11 @@ extension ReportEndpoint: Endpoint {
                 return [:]
             case .other:
                 return .mastodonForks("3.5.0") | [
-                    .gotosocial: .assumeAvailable
+                    .gotosocial: .assumeAvailable,
                 ]
             case .violation:
                 return .mastodonForks("3.5.0") | [
-                    .gotosocial: "0.12.0"
+                    .gotosocial: "0.12.0",
                 ]
             case .spam:
                 return .mastodonForks("3.5.0")

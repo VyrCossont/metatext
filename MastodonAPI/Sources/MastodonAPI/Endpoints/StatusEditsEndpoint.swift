@@ -40,7 +40,7 @@ extension StatusEditsEndpoint: Endpoint {
     public var requires: APICapabilityRequirements? {
         return .mastodonForks("3.5.0") | [
             .pleroma: .assumeAvailable,
-            .akkoma: .assumeAvailable
+            .akkoma: .assumeAvailable,
         ]
     }
 

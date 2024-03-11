@@ -47,8 +47,8 @@ extension PushSubscriptionEndpoint: Endpoint {
                     "endpoint": endpoint.absoluteString,
                     "keys": [
                         "p256dh": publicKey,
-                        "auth": auth
-                    ]
+                        "auth": auth,
+                    ],
                 ] as [String: Any],
                 "data": [
                     "alerts": [
@@ -61,9 +61,9 @@ extension PushSubscriptionEndpoint: Endpoint {
                         "status": alerts.status,
                         "update": alerts.update,
                         "admin.sign_up": alerts.adminSignup,
-                        "admin.report": alerts.adminReport
+                        "admin.report": alerts.adminReport,
                     ],
-                    "policy": policy.rawValue
+                    "policy": policy.rawValue,
                 ] as [String: Any]
             ]
         case let .update(alerts, policy):
@@ -79,9 +79,9 @@ extension PushSubscriptionEndpoint: Endpoint {
                         "status": alerts.status,
                         "update": alerts.update,
                         "admin.sign_up": alerts.adminSignup,
-                        "admin.report": alerts.adminReport
+                        "admin.report": alerts.adminReport,
                     ],
-                    "policy": policy.rawValue
+                    "policy": policy.rawValue,
                 ] as [String: Any]
             ]
         default: return nil

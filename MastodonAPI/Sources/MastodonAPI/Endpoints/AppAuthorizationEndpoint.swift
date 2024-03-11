@@ -29,7 +29,7 @@ extension AppAuthorizationEndpoint: Endpoint {
             var params = [
                 "client_name": clientName,
                 "redirect_uris": redirectURI,
-                "scopes": scopes
+                "scopes": scopes,
             ]
 
             params["website"] = website?.absoluteString

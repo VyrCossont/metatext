@@ -33,7 +33,7 @@ extension ReactionsEndpoint: Endpoint {
         case .status:
             return [
                 .pleroma: .assumeAvailable,
-                .akkoma: .assumeAvailable
+                .akkoma: .assumeAvailable,
             ]
         }
     }
