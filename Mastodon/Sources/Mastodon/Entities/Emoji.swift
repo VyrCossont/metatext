@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct Emoji: Codable {
+public struct Emoji: Codable, Sendable {
     public let shortcode: String
     public let staticUrl: UnicodeURL
     public let url: UnicodeURL
@@ -14,4 +14,8 @@ extension Emoji: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(shortcode)
     }
+}
+
+extension Emoji: Identifiable {
+    public var id: String { shortcode }
 }

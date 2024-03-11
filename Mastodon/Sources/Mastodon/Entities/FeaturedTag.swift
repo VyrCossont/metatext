@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct FeaturedTag: Codable {
+public struct FeaturedTag: Codable, Sendable, Identifiable {
     public let id: Id
     public let name: String
     public let url: UnicodeURL

@@ -6,18 +6,18 @@ import Foundation
 
 /// Result of calling the Mastodon v1 instance API, a mix of instance metadata and client configuration.
 /// See also: `DB.Identity.Instance` summary version in identity database.
-public struct Instance: Codable {
-    public struct URLs: Codable, Hashable {
+public struct Instance: Codable, Sendable {
+    public struct URLs: Codable, Hashable, Sendable {
         public let streamingApi: UnicodeURL
     }
 
-    public struct Stats: Codable, Hashable {
+    public struct Stats: Codable, Hashable, Sendable {
         public let userCount: Int
         public let statusCount: Int
         public let domainCount: Int
     }
 
-    public struct Configuration: Codable, Hashable {
+    public struct Configuration: Codable, Hashable, Sendable {
         public struct Statuses: Codable, Hashable {
             public let maxCharacters: Int?
 

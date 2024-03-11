@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct APIError: Error, Codable {
+public struct APIError: Error, Codable, Sendable {
     public let error: String
 }
 

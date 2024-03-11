@@ -2,8 +2,8 @@
 
 import Foundation
 
-public struct Poll: Codable {
-    public struct Option: Codable, Hashable {
+public struct Poll: Codable, Sendable, Identifiable {
+    public struct Option: Codable, Hashable, Sendable {
         public var title: String
         public var votesCount: Int
     }

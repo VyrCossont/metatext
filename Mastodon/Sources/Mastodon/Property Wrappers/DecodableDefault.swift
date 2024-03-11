@@ -12,7 +12,7 @@ public enum DecodableDefault {}
 // swiftlint:disable nesting
 extension DecodableDefault {
     @propertyWrapper
-    public struct Wrapper<Source: DecodableDefaultSource> {
+    public struct Wrapper<Source: DecodableDefaultSource & Sendable>: Sendable {
         public typealias Value = Source.Value
         public var wrappedValue = Source.defaultValue
 
@@ -26,39 +26,39 @@ public extension DecodableDefault {
     typealias Map = Decodable & ExpressibleByDictionaryLiteral
 
     enum Sources {
-        public enum True: Source {
+        public enum True: Source, Sendable {
             public static var defaultValue: Bool { true }
         }
 
-        public enum False: Source {
+        public enum False: Source, Sendable {
             public static var defaultValue: Bool { false }
         }
 
-        public enum EmptyString: Source {
+        public enum EmptyString: Source, Sendable {
             public static var defaultValue: String { "" }
         }
 
-        public enum EmptyHTML: Source {
+        public enum EmptyHTML: Source, Sendable {
             public static var defaultValue: HTML { HTML(raw: "", attributed: NSAttributedString(string: "")) }
         }
 
-        public enum EmptyList<T: List>: Source {
+        public enum EmptyList<T: List>: Source, Sendable {
             public static var defaultValue: T { [] }
         }
 
-        public enum EmptyMap<T: Map>: Source {
+        public enum EmptyMap<T: Map>: Source, Sendable {
             public static var defaultValue: T { [:] }
         }
 
-        public enum Zero: Source {
+        public enum Zero: Source, Sendable {
             public static var defaultValue: Int { 0 }
         }
 
-        public enum StatusVisibilityPublic: Source {
+        public enum StatusVisibilityPublic: Source, Sendable {
             public static var defaultValue: Status.Visibility { .public }
         }
 
-        public enum ExpandMediaDefault: Source {
+        public enum ExpandMediaDefault: Source, Sendable {
             public static var defaultValue: Preferences.ExpandMedia { .default }
         }
     }

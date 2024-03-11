@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct Preferences: Codable {
+public struct Preferences: Codable, Sendable {
     enum CodingKeys: String, CodingKey {
         case postingDefaultVisibility = "posting:default:visibility"
         case postingDefaultSensitive = "posting:default:sensitive"

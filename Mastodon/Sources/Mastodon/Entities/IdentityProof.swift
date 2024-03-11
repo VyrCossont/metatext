@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct IdentityProof: Codable, Hashable {
+public struct IdentityProof: Codable, Hashable, Sendable {
     public let provider: String
     public let providerUsername: String
     public let profileUrl: UnicodeURL

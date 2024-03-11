@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct FamiliarFollowers: Codable, Identifiable {
+public struct FamiliarFollowers: Codable, Identifiable, Sendable {
     public typealias Id = String
 
     public let id: Id

@@ -4,7 +4,7 @@ import Foundation
 
 /// Like `StringInt` but for dates represented as UNIX timestamps.
 @propertyWrapper
-public struct StringDate: Hashable {
+public struct StringDate: Hashable, Sendable {
     public var wrappedValue: Date
 
     public init(wrappedValue: Date) {

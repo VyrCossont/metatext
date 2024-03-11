@@ -2,7 +2,7 @@
 
 import Foundation
 
-public final class Account: Codable, Identifiable {
+public final class Account: Codable, Identifiable, Sendable {
     public let id: Id
     public let username: String
     public let acct: String

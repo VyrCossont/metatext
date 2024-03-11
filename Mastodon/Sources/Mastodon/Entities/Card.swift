@@ -2,8 +2,8 @@
 
 import Foundation
 
-public struct Card: Codable, Equatable {
-    public enum CardType: String, Codable, Hashable, Unknowable {
+public struct Card: Codable, Equatable, Sendable {
+    public enum CardType: String, Codable, Hashable, Unknowable, Sendable {
         case link, photo, video, rich, unknown
 
         public static var unknownCase: Self { .unknown }

@@ -4,7 +4,7 @@ import Foundation
 
 /// Represents a status's source as plain text.
 /// https://docs.joinmastodon.org/entities/StatusSource/
-public final class StatusSource: Codable, Identifiable {
+public final class StatusSource: Codable, Identifiable, Sendable {
     public let id: Status.Id
     public let text: String
     public let spoilerText: String

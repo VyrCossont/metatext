@@ -2,8 +2,8 @@
 
 import Foundation
 
-public struct Filter: Codable, Identifiable {
-    public enum Context: String, Codable, Unknowable {
+public struct Filter: Codable, Identifiable, Sendable {
+    public enum Context: String, Codable, Unknowable, Sendable {
         case home
         case notifications
         case `public`

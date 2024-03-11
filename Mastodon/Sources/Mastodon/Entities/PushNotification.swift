@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct PushNotification: Codable {
+public struct PushNotification: Codable, Sendable {
     public let accessToken: String
     public let body: String
     public let title: String

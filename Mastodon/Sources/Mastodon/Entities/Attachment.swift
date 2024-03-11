@@ -2,16 +2,16 @@
 
 import Foundation
 
-public struct Attachment: Codable {
-    public enum AttachmentType: String, Codable, Equatable, Unknowable {
+public struct Attachment: Codable, Sendable {
+    public enum AttachmentType: String, Codable, Equatable, Unknowable, Sendable {
         case image, video, gifv, audio, unknown
 
         public static var unknownCase: Self { .unknown }
     }
 
     // swiftlint:disable nesting
-    public struct Meta: Codable, Hashable {
-        public struct Info: Codable, Hashable {
+    public struct Meta: Codable, Hashable, Sendable {
+        public struct Info: Codable, Hashable, Sendable {
             public let width: Int?
             public let height: Int?
             public let size: String?
@@ -21,7 +21,7 @@ public struct Attachment: Codable {
             public let bitrate: Int?
         }
 
-        public struct Focus: Codable, Hashable {
+        public struct Focus: Codable, Hashable, Sendable {
             public var x: Double?
             public var y: Double?
         }

@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct MastodonNotification: Codable {
+public struct MastodonNotification: Codable, Sendable, Identifiable {
     public let id: Id
     public let type: NotificationType
     public let account: Account
@@ -39,7 +39,7 @@ public extension MastodonNotification {
     // TODO: (Vyr) notifications: investigate additional Glitch, Firefish, Akkoma types, including reactions
     /// https://docs.joinmastodon.org/entities/Notification/#type
     /// https://docs.akkoma.dev/stable/development/API/differences_in_mastoapi_responses/#notifications
-    enum NotificationType: String, Codable, Unknowable {
+    enum NotificationType: String, Codable, Unknowable, Sendable {
         case follow
         case mention
         case reblog

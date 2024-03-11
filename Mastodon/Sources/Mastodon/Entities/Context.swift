@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct Context: Codable, Hashable {
+public struct Context: Codable, Hashable, Sendable {
     public let ancestors: [Status]
     public let descendants: [Status]
 

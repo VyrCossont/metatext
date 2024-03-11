@@ -6,7 +6,7 @@ import Foundation
 /// https://docs.joinmastodon.org/entities/Tag/#history
 /// https://docs.joinmastodon.org/entities/PreviewCard/#history
 /// https://docs.joinmastodon.org/entities/Admin_EmailDomainBlock/#history
-public struct History: Codable, Hashable {
+public struct History: Codable, Hashable, Sendable {
     @StringDate public var day: Date
     @StringInt public var uses: Int
     @StringInt public var accounts: Int

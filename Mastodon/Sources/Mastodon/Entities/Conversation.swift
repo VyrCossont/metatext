@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct Conversation: Codable {
+public struct Conversation: Codable, Sendable {
     public let id: Id
     public let accounts: [Account]
     public let unread: Bool

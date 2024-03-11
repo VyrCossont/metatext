@@ -2,8 +2,8 @@
 
 import Foundation
 
-public final class Status: Codable, Identifiable {
-    public enum Visibility: String, Codable, Unknowable, Identifiable {
+public final class Status: Codable, Identifiable, Sendable {
+    public enum Visibility: String, Codable, Unknowable, Identifiable, Sendable {
         case `public`
         case unlisted
         case `private`

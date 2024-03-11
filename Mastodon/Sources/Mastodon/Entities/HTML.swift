@@ -58,7 +58,7 @@ extension HTML: Codable {
 }
 
 public extension HTML {
-    enum Key {
+    enum Key: Sendable {
         /// Value expected to be a `LinkClass`.
         public static let linkClass: NSAttributedString.Key = .init("feditextLinkClass")
         /// Value expected to be an `Int` indicating how many levels of quote we're on.
@@ -68,7 +68,7 @@ public extension HTML {
     }
 
     /// Link classes that imply link semantics or have special formatting.
-    enum LinkClass: Int, Codable {
+    enum LinkClass: Int, Codable, Sendable {
         /// The scheme part of a shortened URL, normally hidden.
         case leadingInvisible = 1
         /// The host and partial path part of a shortened URL, always visible.
@@ -84,7 +84,7 @@ public extension HTML {
     }
 
     /// Choice of two HTML parsers so users can switch back and forth until we get Siren stable.
-    enum Parser: String, Codable, CaseIterable, Identifiable {
+    enum Parser: String, Codable, CaseIterable, Identifiable, Sendable {
         case webkit
         case siren
 
@@ -448,7 +448,7 @@ private extension HTML {
                 attributed.addAttributes(
                     [
                         Self.Key.hashtag: normalized,
-                        .link: AppUrl.tagTimeline(normalized).url
+                        .link: AppUrl.tagTimeline(normalized).url,
                     ],
                     range: nsRange
                 )
@@ -481,7 +481,7 @@ extension NSAttributedString {
             data: data,
             options: [
                 .characterEncoding: NSUTF8StringEncoding,
-                .documentType: NSAttributedString.DocumentType.html
+                .documentType: NSAttributedString.DocumentType.html,
             ],
             documentAttributes: nil
         )

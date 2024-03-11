@@ -5,7 +5,7 @@ import Foundation
 /// The useful cross-version subset of the somewhat overengineered NodeInfo standard for Fediverse instance metadata.
 ///
 /// - See: https://github.com/jhass/nodeinfo
-public struct NodeInfo: Codable, Hashable {
+public struct NodeInfo: Codable, Hashable, Sendable {
     /// Whether this server allows open self-registration.
     public let openRegistrations: Bool
     /// Metadata about server software in use.
@@ -23,7 +23,7 @@ public struct NodeInfo: Codable, Hashable {
         self.usage = usage ?? .init()
     }
 
-    public struct Software: Codable, Hashable {
+    public struct Software: Codable, Hashable, Sendable {
         /// The canonical name of this server software.
         public let name: String
         /// The version of this server software.
@@ -46,7 +46,7 @@ public struct NodeInfo: Codable, Hashable {
         }
     }
 
-    public struct Usage: Codable, Hashable {
+    public struct Usage: Codable, Hashable, Sendable {
         /// The amount of comments that were made by users that are registered on this server.
         public let localComments: Int?
         /// The amount of posts that were made by users that are registered on this server.
@@ -65,7 +65,7 @@ public struct NodeInfo: Codable, Hashable {
         }
     }
 
-    public struct Users: Codable, Hashable {
+    public struct Users: Codable, Hashable, Sendable {
         /// The amount of users that signed in at least once in the last 180 days.
         public let activeHalfyear: Int?
         /// The amount of users that signed in at least once in the last 30 days.

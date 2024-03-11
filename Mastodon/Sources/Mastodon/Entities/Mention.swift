@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct Mention: Codable, Equatable {
+public struct Mention: Codable, Equatable, Sendable {
     public let url: UnicodeURL
     public let username: String
     public let acct: String

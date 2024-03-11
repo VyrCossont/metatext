@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct Relationship: Codable {
+public struct Relationship: Codable, Sendable, Identifiable {
     public let id: Account.Id
     public let following: Bool
     public let requested: Bool

@@ -3,7 +3,7 @@
 import Foundation
 
 /// https://docs.joinmastodon.org/entities/List/
-public struct List: Codable, Identifiable {
+public struct List: Codable, Identifiable, Sendable {
     public let id: Id
     public let title: String
     /// Which replies should be shown in the list.
@@ -25,7 +25,7 @@ public struct List: Codable, Identifiable {
     }
 
     /// https://docs.joinmastodon.org/entities/List/#replies_policy
-    public enum RepliesPolicy: String, Codable, Identifiable, Unknowable {
+    public enum RepliesPolicy: String, Codable, Identifiable, Unknowable, Sendable {
         /// Show replies to any followed user.
         case followed
         /// Show replies to members of the list.

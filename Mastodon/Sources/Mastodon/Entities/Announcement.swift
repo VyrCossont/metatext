@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct Announcement: Codable {
+public struct Announcement: Codable, Sendable {
     public let id: Id
     public let content: HTML
     public let startsAt: Date?

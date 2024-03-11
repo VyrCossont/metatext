@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct Tag: Codable {
+public struct Tag: Codable, Sendable {
     public typealias Name = String
 
     public let name: Name
@@ -33,4 +33,8 @@ extension Tag: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(name)
     }
+}
+
+extension Tag: Identifiable {
+    public var id: Name { name }
 }

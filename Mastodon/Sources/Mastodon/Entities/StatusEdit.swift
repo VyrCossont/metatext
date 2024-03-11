@@ -4,7 +4,7 @@ import Foundation
 
 /// Represents a revision of a status that has been edited.
 /// https://docs.joinmastodon.org/entities/StatusEdit/
-public final class StatusEdit: Codable {
+public final class StatusEdit: Codable, Sendable {
     public let createdAt: Date
     public let account: Account
     @DecodableDefault.EmptyHTML public private(set) var content: HTML

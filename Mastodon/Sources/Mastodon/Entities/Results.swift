@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct Results: Codable {
+public struct Results: Codable, Sendable {
     public let accounts: [Account]
     public let statuses: [Status]
     public let hashtags: [Tag]

@@ -4,7 +4,7 @@ import Foundation
 
 /// Mastodon frequently encodes ints as strings, even when it wouldn't run into JSON numeric precision issues.
 @propertyWrapper
-public struct StringInt: Hashable {
+public struct StringInt: Hashable, Sendable {
     public var wrappedValue: Int
 
     public init(wrappedValue: Int) {

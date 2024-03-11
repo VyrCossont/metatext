@@ -5,7 +5,7 @@ import Foundation
 /// Used for Mastodon announcements and Glitch/Firefish status emoji reactions.
 /// - See: https://docs.joinmastodon.org/entities/Reaction/
 /// - See: https://codeberg.org/firefish/firefish/src/branch/develop/packages/megalodon/src/entities/reaction.ts
-public struct Reaction: Codable, Hashable {
+public struct Reaction: Codable, Hashable, Sendable {
     public let name: String
     public let count: Int
     public let me: Bool

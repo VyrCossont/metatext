@@ -7,7 +7,7 @@ import Foundation
 ///
 /// - See: https://www.packetizer.com/json/jrd/
 /// - See: https://www.rfc-editor.org/rfc/rfc6415.html#appendix-A
-public struct JRD: Codable, Hashable {
+public struct JRD: Codable, Hashable, Sendable {
     public let links: [Link]?
 
     public init(
@@ -17,7 +17,7 @@ public struct JRD: Codable, Hashable {
     }
 
     /// A typed link.
-    public struct Link: Codable, Hashable {
+    public struct Link: Codable, Hashable, Sendable {
         public let rel: String
         public let href: URL?
 

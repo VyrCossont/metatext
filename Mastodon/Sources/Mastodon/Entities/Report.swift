@@ -2,8 +2,8 @@
 
 import Foundation
 
-public struct Report: Codable, Identifiable {
-    public enum Category: String, Codable, Unknowable {
+public struct Report: Codable, Identifiable, Sendable {
+    public enum Category: String, Codable, Unknowable, Sendable {
         case violation
         case spam
         case legal

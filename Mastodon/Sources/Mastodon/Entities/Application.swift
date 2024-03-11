@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct Application: Codable, Hashable {
+public struct Application: Codable, Hashable, Sendable {
     public let name: String
     public let website: String?
 }

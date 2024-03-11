@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct AccessToken: Codable {
+public struct AccessToken: Codable, Sendable {
     public let scope: String
     public let tokenType: String
     public let accessToken: String

@@ -3,7 +3,7 @@
 import Foundation
 
 /// A server rule.
-public struct Rule: Codable, Identifiable, Equatable {
+public struct Rule: Codable, Identifiable, Equatable, Sendable {
     public typealias Id = String
 
     public let id: Id

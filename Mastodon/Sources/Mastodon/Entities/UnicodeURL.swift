@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct UnicodeURL {
+public struct UnicodeURL: Sendable {
     public let raw: String
     public let url: URL?
 

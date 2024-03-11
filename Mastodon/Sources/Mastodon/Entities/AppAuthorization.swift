@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct AppAuthorization: Codable {
+public struct AppAuthorization: Codable, Identifiable, Sendable {
     public let id: Id
     public let clientId: String
     public let clientSecret: String

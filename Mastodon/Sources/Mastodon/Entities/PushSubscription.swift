@@ -2,8 +2,8 @@
 
 import Foundation
 
-public struct PushSubscription: Codable {
-    public struct Alerts: Codable, Hashable {
+public struct PushSubscription: Codable, Sendable {
+    public struct Alerts: Codable, Hashable, Sendable {
         public var follow: Bool
         public var favourite: Bool
         public var reblog: Bool
@@ -32,7 +32,7 @@ public struct PushSubscription: Codable {
         }
     }
 
-    public enum Policy: String, Codable, Identifiable, Unknowable {
+    public enum Policy: String, Codable, Identifiable, Unknowable, Sendable {
         case all
         case followed
         case follower
