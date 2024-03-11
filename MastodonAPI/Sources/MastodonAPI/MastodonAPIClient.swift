@@ -33,13 +33,6 @@ public struct MastodonAPIClient: Sendable {
         self.accessToken = accessToken
     }
 
-    #if DEBUG
-    /// Performance signposter for API calls.
-    private static let signposter = OSSignposter(subsystem: AppMetadata.bundleIDBase, category: .pointsOfInterest)
-    #else
-    private static let signposter = OSSignposter.disabled
-    #endif
-
     /// Signpost name for this class.
     private static let signpostName: StaticString = "MastodonAPIClient"
 
@@ -62,19 +55,23 @@ public struct MastodonAPIClient: Sendable {
             accessToken: accessToken
         )
 
-        let signpostID = Self.signposter.makeSignpostID()
+#if DEBUG
+        /// Performance signposter for API calls.
+        let signposter = OSSignposter(subsystem: AppMetadata.bundleIDBase, category: .pointsOfInterest)
+        let signpostID = signposter.makeSignpostID()
         var signpostURL = target.baseURL
         for pathComponent in target.pathComponents {
             signpostURL.appendPathComponent(pathComponent)
         }
-        let signpostInterval = Self.signposter.beginInterval(
+        let signpostInterval = signposter.beginInterval(
             Self.signpostName,
             id: signpostID,
             "\(endpoint.method.rawValue, privacy: .public) \(signpostURL.absoluteString, privacy: .public)"
         )
         defer {
-            Self.signposter.endInterval(Self.signpostName, signpostInterval)
+            signposter.endInterval(Self.signpostName, signpostInterval)
         }
+#endif
 
         guard endpoint.canCallWith(apiCapabilities) else {
             if let fallback = endpoint.fallback {
