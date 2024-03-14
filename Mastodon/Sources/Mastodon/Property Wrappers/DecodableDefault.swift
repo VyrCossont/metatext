@@ -3,7 +3,7 @@
 import Foundation
 
 public protocol DecodableDefaultSource {
-    associatedtype Value: Decodable
+    associatedtype Value: Decodable & Sendable
     static var defaultValue: Value { get }
 }
 
@@ -12,7 +12,7 @@ public enum DecodableDefault {}
 // swiftlint:disable nesting
 extension DecodableDefault {
     @propertyWrapper
-    public struct Wrapper<Source: DecodableDefaultSource & Sendable>: Sendable {
+    public struct Wrapper<Source: DecodableDefaultSource>: Sendable {
         public typealias Value = Source.Value
         public var wrappedValue = Source.defaultValue
 
@@ -21,44 +21,44 @@ extension DecodableDefault {
 }
 
 public extension DecodableDefault {
-    typealias Source = DecodableDefaultSource
-    typealias List = Decodable & ExpressibleByArrayLiteral
-    typealias Map = Decodable & ExpressibleByDictionaryLiteral
+    typealias Source = DecodableDefaultSource & Sendable
+    typealias List = Decodable & Sendable & ExpressibleByArrayLiteral
+    typealias Map = Decodable & Sendable & ExpressibleByDictionaryLiteral
 
     enum Sources {
-        public enum True: Source, Sendable {
+        public enum True: Source {
             public static var defaultValue: Bool { true }
         }
 
-        public enum False: Source, Sendable {
+        public enum False: Source {
             public static var defaultValue: Bool { false }
         }
 
-        public enum EmptyString: Source, Sendable {
+        public enum EmptyString: Source {
             public static var defaultValue: String { "" }
         }
 
-        public enum EmptyHTML: Source, Sendable {
+        public enum EmptyHTML: Source {
             public static var defaultValue: HTML { HTML(raw: "", attributed: NSAttributedString(string: "")) }
         }
 
-        public enum EmptyList<T: List>: Source, Sendable {
+        public enum EmptyList<T: List>: Source {
             public static var defaultValue: T { [] }
         }
 
-        public enum EmptyMap<T: Map>: Source, Sendable {
+        public enum EmptyMap<T: Map>: Source {
             public static var defaultValue: T { [:] }
         }
 
-        public enum Zero: Source, Sendable {
+        public enum Zero: Source {
             public static var defaultValue: Int { 0 }
         }
 
-        public enum StatusVisibilityPublic: Source, Sendable {
+        public enum StatusVisibilityPublic: Source {
             public static var defaultValue: Status.Visibility { .public }
         }
 
-        public enum ExpandMediaDefault: Source, Sendable {
+        public enum ExpandMediaDefault: Source {
             public static var defaultValue: Preferences.ExpandMedia { .default }
         }
     }

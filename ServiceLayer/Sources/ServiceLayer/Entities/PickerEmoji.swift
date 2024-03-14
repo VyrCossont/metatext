@@ -3,13 +3,13 @@
 import Foundation
 import Mastodon
 
-public indirect enum PickerEmoji: Hashable {
+public indirect enum PickerEmoji: Hashable, Sendable {
     case custom(Emoji, infrequentlyUsed: Bool)
     case system(SystemEmoji, infrequentlyUsed: Bool)
 }
 
 public extension PickerEmoji {
-    enum Category: Hashable {
+    enum Category: Hashable, Sendable {
         case frequentlyUsed
         case custom
         case customNamed(String)

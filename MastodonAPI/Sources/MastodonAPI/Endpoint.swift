@@ -4,7 +4,7 @@ import Foundation
 import HTTP
 
 public protocol Endpoint: Sendable {
-    associatedtype ResultType: Decodable
+    associatedtype ResultType: Decodable & Sendable
     var APIVersion: String { get }
     var context: [String] { get }
     var pathComponentsInContext: [String] { get }

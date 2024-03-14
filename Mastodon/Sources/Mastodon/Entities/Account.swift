@@ -85,13 +85,13 @@ public final class Account: Codable, Identifiable, Sendable {
 public extension Account {
     typealias Id = String
 
-    struct Field: Codable, Hashable {
+    struct Field: Codable, Hashable, Sendable {
         public let name: String
         public let value: HTML
         public let verifiedAt: Date?
     }
 
-    struct Source: Codable, Hashable {
+    struct Source: Codable, Hashable, Sendable {
         public let note: String?
         public let fields: [Field]
         public let privacy: Status.Visibility?

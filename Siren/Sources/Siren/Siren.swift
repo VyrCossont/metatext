@@ -100,7 +100,7 @@ public enum SirenClassesAttribute: CodableAttributedStringKey {
 }
 
 /// The semantic classes commonly supported by Mastodon and other Fedi servers.
-public struct SirenClass: OptionSet, Codable, Hashable {
+public struct SirenClass: OptionSet, Codable, Hashable, Sendable {
     public let rawValue: Int
 
     public init(rawValue: Int) {
@@ -134,7 +134,7 @@ public enum SirenStylesAttribute: CodableAttributedStringKey {
 }
 
 /// Text style with no equivalent among Apple presentation intents.
-public struct SirenStyle: OptionSet, Codable, Hashable, CaseIterable {
+public struct SirenStyle: OptionSet, Codable, Hashable, CaseIterable, Sendable {
     public let rawValue: Int
 
     public init(rawValue: Int) {
@@ -148,12 +148,12 @@ public struct SirenStyle: OptionSet, Codable, Hashable, CaseIterable {
     public static let sup = SirenStyle(rawValue: 1 << 3)
     public static let sub = SirenStyle(rawValue: 1 << 4)
 
-    public static var allCases: [SirenStyle] = [
+    public static let allCases: [SirenStyle] = [
         .strikethru,
         .underline,
         .small,
         .sup,
-        .sub
+        .sub,
     ]
 
     init?(_ element: SwiftSoup.Element) {
@@ -180,7 +180,7 @@ public enum SirenSpecialAttribute: CodableAttributedStringKey {
 }
 
 /// Pseudo-text intended to be replaced with graphics when rendered.
-public enum SirenSpecial: String, Codable {
+public enum SirenSpecial: String, Codable, Sendable {
     /// AKA `hr` tag, which never contains text. Replaced with a line.
     case thematicBreak
 }

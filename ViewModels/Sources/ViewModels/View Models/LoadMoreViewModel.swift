@@ -1,6 +1,7 @@
 // Copyright © 2020 Metabolist. All rights reserved.
 
 import Combine
+import DB
 import ServiceLayer
 
 public final class LoadMoreViewModel: ObservableObject {

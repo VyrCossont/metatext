@@ -65,14 +65,14 @@ public extension ExploreViewModel {
         case navigation(Navigation)
     }
 
-    enum Section: Hashable {
+    enum Section: Hashable, Sendable {
         case tags
         case links
         case statuses
         case instance
     }
 
-    enum Item: Hashable {
+    enum Item: Hashable, Sendable {
         case tag(Tag)
         case link(Card)
         case status(Status)

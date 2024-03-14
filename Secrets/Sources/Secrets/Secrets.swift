@@ -336,7 +336,8 @@ extension URL: SecretsStorable {
 private struct PushKey {
     static let authLength = 16
     static let sizeInBits = 256
-    static let attributes: [String: Any] = [
-        kSecAttrKeyType as String: kSecAttrKeyTypeECSECPrimeRandom,
-        kSecAttrKeySizeInBits as String: sizeInBits]
+    static let attributes: [String: Sendable] = [
+        kSecAttrKeyType as String: kSecAttrKeyTypeECSECPrimeRandom as String,
+        kSecAttrKeySizeInBits as String: sizeInBits,
+    ]
 }

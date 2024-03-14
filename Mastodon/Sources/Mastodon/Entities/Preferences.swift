@@ -19,7 +19,7 @@ public struct Preferences: Codable, Sendable {
 }
 
 public extension Preferences {
-    enum ExpandMedia: String, Codable, Unknowable {
+    enum ExpandMedia: String, Codable, Unknowable, Sendable {
         case `default`
         case showAll
         case hideAll

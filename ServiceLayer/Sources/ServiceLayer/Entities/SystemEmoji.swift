@@ -2,7 +2,7 @@
 
 import Foundation
 
-public final class SystemEmoji: Codable {
+public final class SystemEmoji: Codable, Sendable {
     enum CodingKeys: String, CodingKey {
         case emoji = "e"
         case version = "v"
@@ -24,7 +24,7 @@ public final class SystemEmoji: Codable {
 }
 
 public extension SystemEmoji {
-    enum Group: Int, Codable, Hashable, CaseIterable {
+    enum Group: Int, Codable, Hashable, CaseIterable, Sendable {
         case smileysAndEmotion
         case peopleAndBody
         case components
@@ -37,7 +37,7 @@ public extension SystemEmoji {
         case flags
     }
 
-    enum SkinTone: Int, Codable, Hashable, CaseIterable {
+    enum SkinTone: Int, Codable, Hashable, CaseIterable, Sendable {
         case light = 1
         case mediumLight = 2
         case medium = 3

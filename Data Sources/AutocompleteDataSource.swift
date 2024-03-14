@@ -5,12 +5,12 @@ import Mastodon
 import UIKit
 import ViewModels
 
-enum AutocompleteSection: Int, Hashable {
+enum AutocompleteSection: Int, Hashable, Sendable {
     case search
     case emoji
 }
 
-enum AutocompleteItem: Hashable {
+enum AutocompleteItem: Hashable, Sendable {
     case account(Account)
     case tag(Tag)
     case emoji(PickerEmoji)
