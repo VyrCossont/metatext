@@ -13,9 +13,13 @@ import Siren
 import SwiftSoup
 import SwiftUI
 
-public struct HTML {
+// TODO: (Vyr) remove as many AttrStr-NSAttrStr conversions as possible
+public struct HTML: Sendable {
     public let raw: String
-    public var attributed: NSAttributedString
+    public let attrStr: AttributedString
+    public var attributed: NSAttributedString {
+        (try? .init(attrStr, including: \.all)) ?? NSAttributedString()
+    }
 
     /// Temporary app-wide global for switching HTML parsers.
     /// Necessary because HTML parsing in Feditext is currently part of `Decodable` decoding,
@@ -43,9 +47,9 @@ extension HTML: Codable {
     public init(raw: String) {
         self.raw = raw
         if let cachedAttributedString = Self.attributedStringCache.object(forKey: raw as NSString) {
-            attributed = cachedAttributedString
+            attrStr = (try? AttributedString(cachedAttributedString, including: \.all)) ?? AttributedString()
         } else {
-            attributed = Self.parse(raw)
+            attrStr = (try? AttributedString(Self.parse(raw), including: \.all)) ?? AttributedString()
             Self.attributedStringCache.setObject(attributed, forKey: raw as NSString)
         }
     }
@@ -162,14 +166,7 @@ public enum FeditextHashtagAttribute: CodableAttributedStringKey {
 
 private extension HTML {
     /// Cache for parsed versions of HTML strings, keyed by the original HTML.
-    static var attributedStringCache = NSCache<NSString, NSAttributedString>()
-
-    #if DEBUG
-    /// Performance signposter for HTML parsing.
-    private static let signposter = OSSignposter(subsystem: AppMetadata.bundleIDBase, category: .pointsOfInterest)
-    #else
-    private static let signposter = OSSignposter.disabled
-    #endif
+    static let attributedStringCache = NSCache<NSString, NSAttributedString>()
 
     /// This hack uses text background color to pass class information through the WebKit HTML parser,
     /// since there's no direct mechanism for attaching CSS classes to an attributed string.
@@ -297,11 +294,14 @@ private extension HTML {
     /// Parse the subset of HTML we support, including semantic classes where present
     /// (not all Fedi servers send them, and Mastodon does a terrible job of normalizing remote HTML).
     static func parse(_ raw: String) -> NSAttributedString {
+        #if DEBUG
+        let signposter = OSSignposter(subsystem: AppMetadata.bundleIDBase, category: .pointsOfInterest)
         let signpostName = HTML.parser.signpostName
-        let signpostInterval = Self.signposter.beginInterval(signpostName, id: Self.signposter.makeSignpostID())
+        let signpostInterval = signposter.beginInterval(signpostName, id: signposter.makeSignpostID())
         defer {
-            Self.signposter.endInterval(signpostName, signpostInterval)
+            signposter.endInterval(signpostName, signpostInterval)
         }
+        #endif
 
         let attributed: NSMutableAttributedString
         switch HTML.parser {
