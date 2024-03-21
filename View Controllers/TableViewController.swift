@@ -25,7 +25,7 @@ class TableViewController: UITableViewController {
     private var newItemsViewVisibleConstraint: NSLayoutConstraint?
     private var isPastInitialAppearance = false
     private let insetBottom: Bool
-    private weak var parentNavigationController: UINavigationController?
+    public weak var parentNavigationController: UINavigationController?
 
     private lazy var dataSource: TableViewDataSource = {
         .init(tableView: tableView, viewModel: viewModel)
@@ -530,7 +530,7 @@ private extension TableViewController {
     }
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
-    func handle(event: CollectionItemEvent) {
+    public func handle(event: CollectionItemEvent) {
         switch event {
         case .ignorableOutput:
             break

@@ -7,7 +7,7 @@ import ServiceLayer
 
 public final class ExploreViewModel: ObservableObject {
     public let searchViewModel: SearchViewModel
-    public let events: AnyPublisher<Event, Never>
+    public let events: AnyPublisher<CollectionItemEvent, Never>
     @Published public var instanceViewModel: InstanceViewModel?
     @Published public var announcementCount: (total: Int, unread: Int) = (0, 0)
     @Published public var tags = [Tag]()
@@ -18,7 +18,7 @@ public final class ExploreViewModel: ObservableObject {
     public let identityContext: IdentityContext
 
     private let exploreService: ExploreService
-    private let eventsSubject = PassthroughSubject<Event, Never>()
+    private let eventsSubject = PassthroughSubject<CollectionItemEvent, Never>()
     private let statusEventsSubject = PassthroughSubject<AnyPublisher<CollectionItemEvent, Error>, Never>()
     private var cancellables = Set<AnyCancellable>()
 
@@ -40,31 +40,16 @@ public final class ExploreViewModel: ObservableObject {
             .assignErrorsToAlertItem(to: \.alertItem, on: self)
             .assign(to: &$announcementCount)
 
-        // Forward collection navigation events to our events subject.
+        // Forward status events to our events subject.
         statusEventsSubject
             .receive(on: DispatchQueue.main)
             .flatMap { $0.assignErrorsToAlertItem(to: \.alertItem, on: self) }
-            .compactMap {
-                switch $0 {
-                case let CollectionItemEvent.navigation(nav):
-                    return Event.navigation(nav)
-                default:
-                    // TODO: (Vyr) Explore tab: there are a ton of events we need to handle that can actually happen
-                    //  For example, sharing a status, opening the emoji picker to react to a status…
-                    assertionFailure("Untranslatable CollectionItemEvent: \($0)")
-                    return nil
-                }
-            }
             .sink(receiveValue: { [weak self] in self?.eventsSubject.send($0) })
             .store(in: &cancellables)
     }
 }
 
 public extension ExploreViewModel {
-    enum Event {
-        case navigation(Navigation)
-    }
-
     enum Section: Hashable {
         case tags
         case links

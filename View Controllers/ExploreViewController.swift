@@ -6,6 +6,7 @@ import ViewModels
 
 final class ExploreViewController: UICollectionViewController {
     private let webfingerIndicatorView = WebfingerIndicatorView()
+    private let searchResultsController: TableViewController
     private let viewModel: ExploreViewModel
     private let rootViewModel: RootViewModel
     private var cancellables = Set<AnyCancellable>()
@@ -17,8 +18,15 @@ final class ExploreViewController: UICollectionViewController {
     init(viewModel: ExploreViewModel, rootViewModel: RootViewModel) {
         self.viewModel = viewModel
         self.rootViewModel = rootViewModel
+        self.searchResultsController = TableViewController(
+            viewModel: viewModel.searchViewModel,
+            rootViewModel: rootViewModel,
+            insetBottom: false
+        )
 
         super.init(collectionViewLayout: Self.layout())
+
+        self.searchResultsController.parentNavigationController = navigationController
 
         tabBarItem = UITabBarItem(
             title: NSLocalizedString("main-navigation.explore", comment: ""),
@@ -59,12 +67,6 @@ final class ExploreViewController: UICollectionViewController {
 
         navigationItem.title = NSLocalizedString("main-navigation.explore", comment: "")
 
-        let searchResultsController = TableViewController(
-            viewModel: viewModel.searchViewModel,
-            rootViewModel: rootViewModel,
-            insetBottom: false,
-            parentNavigationController: navigationController)
-
         let searchController = UISearchController(searchResultsController: searchResultsController)
 
         searchController.searchResultsUpdater = self
@@ -91,17 +93,28 @@ final class ExploreViewController: UICollectionViewController {
             webfingerIndicatorView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor)
         ])
 
+        // Forward events to the table view controller that can handle them.
+        // TODO: (Vyr) this table view controller does not seem to actually be in the view hierarchy:
+        //  Tap an image or video and you'll get an error like:
+        //  Attempt to present <AVPlayerViewController: 0x7fb997213800> on <Feditext.TableViewController: 0x7fb9b687a000> (from <Feditext.TableViewController: 0x7fb9b687a000>) whose view is not in the window hierarchy.
         viewModel.events
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.handle(event: $0) }
+            .sink { [weak self] in
+                switch $0 {
+                case let .navigation(navigation):
+                    self?.handle(navigation: navigation)
+                default:
+                    self?.searchResultsController.handle(event: $0)
+                }
+            }
             .store(in: &cancellables)
 
         viewModel.$loading.sink { [weak self] in
             guard let self = self else { return }
 
-            let refreshControlVisibile = self.collectionView.refreshControl?.isRefreshing ?? false
+            let refreshControlVisible = self.collectionView.refreshControl?.isRefreshing ?? false
 
-            if !$0, refreshControlVisibile {
+            if !$0, refreshControlVisible {
                 self.collectionView.refreshControl?.endRefreshing()
             }
         }
@@ -185,7 +198,7 @@ extension ExploreViewController: NavigationHandling {
         case .webfingerEnd:
             webfingerIndicatorView.stopAnimating()
         default:
-            break
+            searchResultsController.handle(navigation: navigation)
         }
     }
 }
@@ -208,12 +221,5 @@ private extension ExploreViewController {
 
                 return section
             })
-    }
-
-    func handle(event: ExploreViewModel.Event) {
-        switch event {
-        case let .navigation(navigation):
-            handle(navigation: navigation)
-        }
     }
 }
