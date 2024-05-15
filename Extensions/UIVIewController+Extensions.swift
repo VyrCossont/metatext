@@ -8,7 +8,7 @@ import ViewModels
 extension UIViewController {
     var isVisible: Bool { isViewLoaded && view.window != nil }
 
-    func present(alertItem: AlertItem) {
+    func present(alertItem: AlertItem, completion: (() -> Void)? = nil) {
         let copyActionTitle: String
         let copyItems: [String: Data]
         if let json = alertItem.json {
@@ -39,7 +39,7 @@ extension UIViewController {
         alertController.addAction(okAction)
         alertController.preferredAction = okAction
 
-        present(alertController, animated: true)
+        present(alertController, animated: true, completion: completion)
     }
 
     #if !IS_SHARE_EXTENSION

@@ -260,8 +260,8 @@ private extension ComposeStatusViewController {
                 guard let self = self else { return }
 
                 if self.presentedViewController != nil {
-                    self.dismiss(animated: true) {
-                        self.present(alertItem: alertItem)
+                    self.present(alertItem: alertItem) {
+                        self.dismiss(animated: true)
                     }
                 } else {
                     self.present(alertItem: alertItem)
