@@ -422,7 +422,6 @@ extension ContentDatabase {
             }
         }
 
-        // This column may have been removed by a migration that had to be rolled back.
         migrator.registerMigration("1.7.4-account-more-metadata-rollback") { db in
             do {
                 try db.alter(table: "accountRecord") { t in
@@ -449,6 +448,25 @@ extension ContentDatabase {
                 t.column("filtered", .text)
 
                 t.primaryKey(["statusId", "context"], onConflict: .replace)
+            }
+        }
+
+        migrator.registerMigration("1.7.4-account-more-metadata-2") { db in
+            try db.alter(table: "accountRecord") { t in
+                t.drop(column: "discoverable")
+            }
+
+            do {
+                try db.alter(table: "accountRecord") { t in
+                    t.add(column: "suspended", .boolean).notNull().defaults(to: false)
+                    t.add(column: "limited", .boolean).notNull().defaults(to: false)
+                    t.add(column: "role", .blob)
+                    t.add(column: "lastStatusAt", .datetime)
+                    t.add(column: "muteExpiresAt", .datetime)
+                }
+            } catch {
+                // Ignore this failure, as it probably means the user already ran the original
+                // 1.7.4-account-more-metadata migration, and those columns already exist.
             }
         }
 

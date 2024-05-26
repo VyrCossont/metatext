@@ -11,6 +11,7 @@ public enum HTTPMethod: String {
     case mkcol = "MKCOL"
     case move = "MOVE"
     case options = "OPTIONS"
+    case patch = "PATCH"
     case post = "POST"
     case propfind = "PROPFIND"
     case proppatch = "PROPPATCH"

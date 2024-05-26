@@ -14,6 +14,7 @@ struct AccountRecord: ContentDatabaseRecord, Hashable {
     let followersCount: Int
     let followingCount: Int
     let statusesCount: Int
+    let lastStatusAt: Date?
     let note: HTML
     let url: String
     let avatar: UnicodeURL
@@ -24,8 +25,11 @@ struct AccountRecord: ContentDatabaseRecord, Hashable {
     let emojis: [Emoji]
     let bot: Bool
     let group: Bool
-    let discoverable: Bool
+    let suspended: Bool
+    let limited: Bool
     let movedId: Account.Id?
+    let role: Account.Role?
+    let muteExpiresAt: Date?
 }
 
 extension AccountRecord {
@@ -39,6 +43,7 @@ extension AccountRecord {
         static let followersCount = Column(CodingKeys.followersCount)
         static let followingCount = Column(CodingKeys.followingCount)
         static let statusesCount = Column(CodingKeys.statusesCount)
+        static let lastStatusAt = Column(CodingKeys.lastStatusAt)
         static let note = Column(CodingKeys.note)
         static let url = Column(CodingKeys.url)
         static let avatar = Column(CodingKeys.avatar)
@@ -49,8 +54,11 @@ extension AccountRecord {
         static let emojis = Column(CodingKeys.emojis)
         static let bot = Column(CodingKeys.bot)
         static let group = Column(CodingKeys.group)
-        static let discoverable = Column(CodingKeys.discoverable)
+        static let suspended = Column(CodingKeys.suspended)
+        static let limited = Column(CodingKeys.limited)
         static let movedId = Column(CodingKeys.movedId)
+        static let role = Column(CodingKeys.role)
+        static let muteExpiresAt = Column(CodingKeys.muteExpiresAt)
     }
 }
 
@@ -90,6 +98,7 @@ extension AccountRecord {
         followersCount = account.followersCount
         followingCount = account.followingCount
         statusesCount = account.statusesCount
+        lastStatusAt = account.lastStatusAt
         note = account.note
         url = account.url
         avatar = account.avatar
@@ -100,7 +109,10 @@ extension AccountRecord {
         emojis = account.emojis
         bot = account.bot
         group = account.group
-        discoverable = account.discoverable
+        suspended = account.suspended
+        limited = account.limited
         movedId = account.moved?.id
+        role = account.role
+        muteExpiresAt = account.muteExpiresAt
     }
 }

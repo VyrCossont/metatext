@@ -12,7 +12,8 @@ public final class MastodonDecoder: JSONDecoder {
             let dateString = try container.decode(String.self)
 
             guard let date = Self.dateFormatter.date(from: dateString)
-                    ?? Self.dateFormatterWithoutFractionalSeconds.date(from: dateString) else {
+                    ?? Self.dateFormatterWithoutFractionalSeconds.date(from: dateString)
+                    ?? Self.dateFormatterWithoutTime.date(from: dateString) else {
                 throw DecodingError.dataCorruptedError(in: container, debugDescription: "Unable to parse ISO8601 date")
             }
 
@@ -34,6 +35,15 @@ public extension MastodonDecoder {
         let dateFormatter = ISO8601DateFormatter()
 
         dateFormatter.formatOptions = [.withInternetDateTime]
+
+        return dateFormatter
+    }()
+
+    /// Date-only format used by Mastodon's `last_status_at`.
+    static let dateFormatterWithoutTime: ISO8601DateFormatter = {
+        let dateFormatter = ISO8601DateFormatter()
+
+        dateFormatter.formatOptions = [.withFullDate, .withDashSeparatorInDate]
 
         return dateFormatter
     }()

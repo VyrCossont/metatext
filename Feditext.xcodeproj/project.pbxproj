@@ -49,6 +49,7 @@
 		94B5C6DA2A741DC40076DB01 /* ActivityPub@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 94B5C6D82A741DC40076DB01 /* ActivityPub@3x.png */; };
 		94C282782A7EFCF0005E192D /* Identity.Preferences.TintColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C282772A7EFCF0005E192D /* Identity.Preferences.TintColor+Extensions.swift */; };
 		94D77DF92C55C92400B9E8F6 /* Common in Frameworks */ = {isa = PBXBuildFile; productRef = 94D77DF82C55C92400B9E8F6 /* Common */; };
+		94CC92082C03F8AB00FD7587 /* HexColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94CC92072C03F8AB00FD7587 /* HexColor+Extensions.swift */; };
 		94D9E1B32BC60B47003C1C18 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 94D9E1B22BC60B47003C1C18 /* PrivacyInfo.xcprivacy */; };
 		94E174AB299AEC2D00D040B3 /* Report+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E174AA299AEC2D00D040B3 /* Report+Extensions.swift */; };
 		94E6C2482991A235003771D1 /* PostingDefaultLanguageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E6C2472991A235003771D1 /* PostingDefaultLanguageView.swift */; };
@@ -420,6 +421,7 @@
 		94B5C6D82A741DC40076DB01 /* ActivityPub@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ActivityPub@3x.png"; sourceTree = "<group>"; };
 		94C282772A7EFCF0005E192D /* Identity.Preferences.TintColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Identity.Preferences.TintColor+Extensions.swift"; sourceTree = "<group>"; };
 		94C733B32C55C61A00BF25FC /* Common */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Common; sourceTree = "<group>"; };
+		94CC92072C03F8AB00FD7587 /* HexColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HexColor+Extensions.swift"; sourceTree = "<group>"; };
 		94D9E1B22BC60B47003C1C18 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		94E174AA299AEC2D00D040B3 /* Report+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Report+Extensions.swift"; sourceTree = "<group>"; };
 		94E6C2472991A235003771D1 /* PostingDefaultLanguageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingDefaultLanguageView.swift; sourceTree = "<group>"; };
@@ -1118,6 +1120,7 @@
 				D0F0B135251AA12700942152 /* CollectionItem+Extensions.swift */,
 				D0D2AC3825BBEC0F003D5DF2 /* CollectionSection+Extensions.swift */,
 				9469230C2BB617D500628836 /* EnvironmentValues+Extensions.swift */,
+				94CC92072C03F8AB00FD7587 /* HexColor+Extensions.swift */,
 				94C282772A7EFCF0005E192D /* Identity.Preferences.TintColor+Extensions.swift */,
 				94E7B18A2A5A0F7000A1F1DA /* List.RepliesPolicy+Extensions.swift */,
 				94979DA32A3E37ED00542793 /* MastodonNotification.NotificationType+Extensions.swift */,
@@ -1533,6 +1536,7 @@
 				D0625E59250F092900502611 /* StatusTableViewCell.swift in Sources */,
 				D0E569DB2529319100FA1D72 /* LoadMoreView.swift in Sources */,
 				D05936FF25AA94EA00754FDF /* MarkAttachmentsSensitiveView.swift in Sources */,
+				94CC92082C03F8AB00FD7587 /* HexColor+Extensions.swift in Sources */,
 				D07EC7E325B13DD3006DF726 /* EmojiContentConfiguration.swift in Sources */,
 				D0B5FE9B251583DB00478838 /* ProfileCollection+Extensions.swift in Sources */,
 				D021A61A25C36C1A008A0C0D /* IdentityContentConfiguration.swift in Sources */,

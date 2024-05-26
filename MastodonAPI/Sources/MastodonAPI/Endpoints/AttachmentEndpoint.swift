@@ -30,11 +30,8 @@ extension AttachmentEndpoint: Endpoint {
         case let .create(data, mimeType, description, focus):
             var params = [String: MultipartFormValue]()
 
-            params["file"] = .data(data, filename: UUID().uuidString, mimeType: mimeType)
-
-            if let description = description {
-                params["description"] = .string(description)
-            }
+            params.add("file", data, mimeType)
+            params.add("description", description)
 
             if let x = focus?.x, let y = focus?.y {
                 params["focus"] = .string("\(x),\(y)")
@@ -44,9 +41,7 @@ extension AttachmentEndpoint: Endpoint {
         case let .update(_, description, focus):
             var params = [String: MultipartFormValue]()
 
-            if let description = description {
-                params["description"] = .string(description)
-            }
+            params.add("description", description)
 
             if let x = focus?.x, let y = focus?.y {
                 params["focus"] = .string("\(x),\(y)")
