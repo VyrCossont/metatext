@@ -80,6 +80,8 @@ public struct HTTPError: Error, AnnotatedError, LocalizedError, Encodable {
         switch self.reason {
         case .nonHTTPURLResponse:
             message = NSLocalizedString("http-error.non-http-response", comment: "")
+        case .rateLimiterError:
+            message = NSLocalizedString("http-error.rate-limiter-error", comment: "")
         case .invalidStatusCode:
             message = String.localizedStringWithFormat(
                 NSLocalizedString("http-error.status-code-%ld", comment: ""),
@@ -96,7 +98,7 @@ public struct HTTPError: Error, AnnotatedError, LocalizedError, Encodable {
 
     public var failQuietly: Bool {
         switch reason {
-        case .nonHTTPURLResponse:
+        case .nonHTTPURLResponse, .rateLimiterError:
             return false
         case .invalidStatusCode:
             return method.flatMap { HTTPMethod(rawValue: $0) }?.safe ?? false
@@ -106,5 +108,6 @@ public struct HTTPError: Error, AnnotatedError, LocalizedError, Encodable {
     public enum Reason: String, Encodable {
         case nonHTTPURLResponse
         case invalidStatusCode
+        case rateLimiterError
     }
 }

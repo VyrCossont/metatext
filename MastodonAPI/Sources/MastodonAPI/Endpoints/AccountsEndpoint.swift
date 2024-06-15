@@ -14,7 +14,29 @@ public enum AccountsEndpoint {
     case accountsFollowing(id: Account.Id)
     case followRequests
     /// https://docs.joinmastodon.org/methods/directory/
-    case directory(local: Bool)
+    case directory(
+        local: Bool? = nil,
+        order: DirectoryOrder? = nil,
+        limit: Int? = nil,
+        offset: Int? = nil
+    )
+    /// https://docs.joinmastodon.org/methods/accounts/#search
+    case search(
+        query: String,
+        resolve: Bool = false,
+        following: Bool = false,
+        limit: Int? = nil,
+        offset: Int? = nil
+    )
+}
+
+public extension AccountsEndpoint {
+    enum DirectoryOrder: String {
+        /// Sort by most recent posters first.
+        case active
+        /// Sort by newest accounts first.
+        case new
+    }
 }
 
 extension AccountsEndpoint: Endpoint {
@@ -26,7 +48,7 @@ extension AccountsEndpoint: Endpoint {
             return defaultContext + ["statuses"]
         case .mutes, .blocks, .followRequests, .directory:
             return defaultContext
-        case .accountsFollowers, .accountsFollowing:
+        case .accountsFollowers, .accountsFollowing, .search:
             return defaultContext + ["accounts"]
         }
     }
@@ -49,13 +71,30 @@ extension AccountsEndpoint: Endpoint {
             return ["follow_requests"]
         case .directory:
             return ["directory"]
+        case .search:
+            return ["search"]
         }
     }
 
     public var queryParameters: [URLQueryItem] {
         switch self {
-        case let .directory(local):
-            return [.init(name: "local", value: String(local))]
+        case let .directory(local, order, limit, offset):
+            var params = [URLQueryItem]()
+            params.add("local", local)
+            params.add("order", order?.rawValue)
+            params.add("limit", limit)
+            params.add("offset", offset)
+            return params
+
+        case let .search(query, resolve, following, limit, offset):
+            var params = [URLQueryItem]()
+            params.add("query", query)
+            params.add("resolve", resolve)
+            params.add("following", following)
+            params.add("limit", limit)
+            params.add("offset", offset)
+            return params
+
         default:
             return []
         }
@@ -70,6 +109,11 @@ extension AccountsEndpoint: Endpoint {
         case .directory:
             return .mastodonForks("3.0.0") | [
                 .fedibird: "0.1.0"
+            ]
+        case .search:
+            return .mastodonForks("2.8.0") | [
+                .fedibird: "0.1.0",
+                .gotosocial: .assumeAvailable
             ]
         case .mutes:
             return .mastodonForks(.assumeAvailable) | [

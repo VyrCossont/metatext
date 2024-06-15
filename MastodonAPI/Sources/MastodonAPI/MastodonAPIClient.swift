@@ -21,13 +21,14 @@ public struct MastodonAPIClient: Sendable {
         instanceURL: URL,
         apiCapabilities: APICapabilities,
         accessToken: String?,
+        rateLimiter: RateLimiter? = nil,
         allowUnencryptedHTTP: Bool = false
     ) throws {
         guard instanceURL.scheme == "https" || (instanceURL.scheme == "http" && allowUnencryptedHTTP) else {
             throw MastodonAPIClientError.protocolNotSupported(instanceURL.scheme)
         }
 
-        self.httpClient = .init(session: session)
+        self.httpClient = .init(session: session, rateLimiter: rateLimiter)
         self.instanceURL = instanceURL
         self.apiCapabilities = apiCapabilities
         self.accessToken = accessToken

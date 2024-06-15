@@ -19,7 +19,7 @@ extension Pixelfed.DiscoverEndpoint: Endpoint {
             return ["discover", "posts"]
         }
     }
-    
+
     public var method: HTTPMethod {
         switch self {
         case .posts:

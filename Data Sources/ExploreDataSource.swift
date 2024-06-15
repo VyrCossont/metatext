@@ -155,7 +155,7 @@ private extension ExploreDataSource {
             )
         }
 
-        if AccountsEndpoint.directory(local: false).canCallWith(identityContext.apiCapabilities) {
+        if AccountsEndpoint.directory().canCallWith(identityContext.apiCapabilities) {
             instanceSectionItems.append(.profileDirectory)
         }
 

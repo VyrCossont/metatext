@@ -3,15 +3,19 @@
 import Foundation
 
 /// Mid-level HTTP client wrapping `URLSession`.
-/// Provides response decoding, some error handling, and enables request stubbing in test scenarios.
+/// Provides response decoding, some error handling, optional rate limiting,
+/// and enables request stubbing in test scenarios.
 public struct HTTPClient: Sendable {
     private let session: URLSession
+    private let rateLimiter: RateLimiter?
 
-    public init(session: URLSession) {
+    public init(session: URLSession, rateLimiter: RateLimiter? = nil) {
         self.session = session
+        self.rateLimiter = rateLimiter
     }
 
-    /// Request something and decode it, returning the decoded object, and the response for higher-level error handling and paging.
+    /// Request something and decode it, returning the decoded object,
+    /// and the response for higher-level error handling and paging.
     public func request<T: DecodableTarget>(
         _ target: T,
         progress: Progress? = nil,
@@ -26,6 +30,8 @@ public struct HTTPClient: Sendable {
                 (protocolClass as? TargetProcessing.Type)?.process(target: target)
             }
         }
+
+        try await rateLimiter?.request(target)
 
         let data: Data
         let response: URLResponse
@@ -48,6 +54,8 @@ public struct HTTPClient: Sendable {
                 requestLocation: requestLocation
             )
         }
+
+        try await rateLimiter?.update(target, httpResponse)
 
         guard Self.validStatusCodes.contains(httpResponse.statusCode) else {
             throw HTTPError(
