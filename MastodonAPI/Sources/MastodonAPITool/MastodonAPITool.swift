@@ -94,11 +94,11 @@ struct MastodonAPITool: AsyncParsableCommand {
             let startTime = ProcessInfo.processInfo.systemUptime
             for htmlFragment in htmlFragments {
                 let fragmentStartTime = ProcessInfo.processInfo.systemUptime
-                let parsed = HTML(raw: htmlFragment).attributed
+                let parsed = HTML(raw: htmlFragment).attrStr
                 let fragmentEndTime = ProcessInfo.processInfo.systemUptime
 
-                outputCharCount += parsed.string.count
-                if parsed.string.isEmpty {
+                outputCharCount += parsed.characters.count
+                if parsed.characters.isEmpty {
                     emptyOutputStrings += 1
                 }
                 let fragmentElapsedTime = fragmentEndTime - fragmentStartTime
