@@ -394,6 +394,7 @@
 		943CF1152A7324620032A0D2 /* Asset Originals */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Asset Originals"; sourceTree = "<group>"; };
 		943D4FFF2AD5B89B0097C4DF /* MastodonAPI GtS integration.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "MastodonAPI GtS integration.xctestplan"; sourceTree = "<group>"; };
 		9460331E2A2D3B8E00F5757E /* NotificationReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationReportView.swift; sourceTree = "<group>"; };
+		946455422C46E2DA00CABF3D /* Macros */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Macros; sourceTree = "<group>"; };
 		946923062BB5FA0A00628836 /* AlertItem+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlertItem+Extensions.swift"; sourceTree = "<group>"; };
 		946923082BB6116600628836 /* AnnotatedAPIError+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnnotatedAPIError+Extensions.swift"; sourceTree = "<group>"; };
 		9469230A2BB611D300628836 /* AnnotatedURLError+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnnotatedURLError+Extensions.swift"; sourceTree = "<group>"; };
@@ -958,6 +959,7 @@
 				947873BB297E0F9000CACEFE /* Identity.xcconfig */,
 				D0BECB952501B3DD002C1B13 /* Keychain */,
 				D0C7D45624F76169001EBDBB /* Localizations */,
+				946455422C46E2DA00CABF3D /* Macros */,
 				D0E0F1E424FC49FC002C04BF /* Mastodon */,
 				D0BECB9D2501CBC3002C1B13 /* MastodonAPI */,
 				D0E5361A24E3EB4D00FB1CE1 /* Notification Service Extension */,
