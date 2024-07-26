@@ -7,8 +7,13 @@ import ViewModels
 
 final class TimelinesViewController: UIPageViewController {
     private let segmentedControl = UISegmentedControl()
-    private let timelineViewModels: [CollectionItemsViewModel]
-    private let timelineViewControllers: [TableViewController]
+    private let prevTimelineLabel = UIImage(systemName: "arrowtriangle.backward")
+    private let nextTimelineLabel = UIImage(systemName: "arrowtriangle.forward")
+    private var timelines = [Timeline]()
+    private var selectedTimeline: Timeline?
+    // TODO: (Vyr) perf: unless these are loaded on demand, cap at like 10, LRU-fashion
+    private var timelineViewModels = [Timeline: CollectionItemsViewModel]()
+    private var timelineViewControllers = [Timeline: TableViewController]()
     private let viewModel: NavigationViewModel
     private let rootViewModel: RootViewModel
     private var cancellables = Set<AnyCancellable>()
@@ -17,34 +22,9 @@ final class TimelinesViewController: UIPageViewController {
         self.viewModel = viewModel
         self.rootViewModel = rootViewModel
 
-        var timelineViewModels = [CollectionItemsViewModel]()
-        var timelineViewControllers = [TableViewController]()
-
-        for (index, timeline) in viewModel.timelines.enumerated() {
-            let viewModel = viewModel.viewModel(timeline: timeline)
-            timelineViewModels.append(viewModel)
-            timelineViewControllers.append(
-                TableViewController(
-                    viewModel: viewModel,
-                    rootViewModel: rootViewModel
-                )
-            )
-            segmentedControl.insertSegment(withTitle: timeline.title, at: index, animated: false)
-        }
-
-        self.timelineViewModels = timelineViewModels
-        self.timelineViewControllers = timelineViewControllers
-
         super.init(transitionStyle: .scroll,
                    navigationOrientation: .horizontal,
                    options: [.interPageSpacing: CGFloat.defaultSpacing])
-
-        if let timelineActionViewModel = timelineViewModels.first?.timelineActionViewModel {
-            self.setupTimelineActionBarButtonItem(timelineActionViewModel)
-        }
-        if let firstViewController = timelineViewControllers.first {
-            setViewControllers([firstViewController], direction: .forward, animated: false)
-        }
 
         tabBarItem = UITabBarItem(
             title: NSLocalizedString("main-navigation.timelines", comment: ""),
@@ -91,6 +71,42 @@ final class TimelinesViewController: UIPageViewController {
                 }
             },
             for: .valueChanged)
+    }
+
+    /// Called when we get a new list of available timelines
+    /// due to first load or to authentication, lists, or followed tags changing.
+    private func update(_ timelines: [Timeline]) {
+        // Assume that if the timeline list was previously empty, we just appeared.
+        let firstUpdate = self.timelines.isEmpty
+        // Timelines for which we already had view models and view controllers.
+        let alreadyLoadedTimelines = Set(self.timelines)
+
+        self.timelines = timelines
+
+        for timeline in timelines where !alreadyLoadedTimelines.contains(timeline) {
+            let viewModel = viewModel.viewModel(timeline: timeline)
+            timelineViewModels[timeline] = viewModel
+            timelineViewControllers[timeline] = TableViewController(
+                viewModel: viewModel,
+                rootViewModel: rootViewModel
+            )
+            segmentedControl.insertSegment(withTitle: timeline.title, at: index, animated: false)
+        }
+
+        // These timelines should now be loaded.
+        let expectedTimelines = Set(timelines)
+
+        // Unload any timelines we're not using any more.
+        for timeline in alreadyLoadedTimelines where !expectedTimelines.contains(timeline) {
+            timelineViewModels.removeValue(forKey: timeline)
+            timelineViewControllers.removeValue(forKey: timeline)
+        }
+
+    }
+
+    /// Called when the user selects a timeline by tapping the segmented control or by swiping.
+    private func select(_ timeline: Timeline) {
+
     }
 
     private func setupTimelineActionBarButtonItem(_ timelineActionViewModel: TimelineActionViewModel) {

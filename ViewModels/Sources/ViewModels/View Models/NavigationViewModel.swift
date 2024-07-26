@@ -16,9 +16,19 @@ public final class NavigationViewModel: ObservableObject {
     @Published public var presentingSecondaryNavigation = false
     @Published public var alertItem: AlertItem?
 
+    /// Available timelines, starting with home (if authenticated), local, and federated,
+    /// (FUTURE: and bubble), then lists, then followed tags.
+    @Published public private(set) var timelines: [Timeline] = []
+
+    /// Subset of ``timelines`` to show in the timeline switcher segmented control.
+    @Published public private(set) var visibleTimelines: [Timeline] = []
+
     private let navigationsSubject = PassthroughSubject<Navigation, Never>()
     private let environment: AppEnvironment
     private var cancellables = Set<AnyCancellable>()
+
+    /// Maximum number of timelines to show in the timeline switcher segmented control.
+    private static let maxVisibleTimelines = 3
 
     public init(identityContext: IdentityContext, environment: AppEnvironment) {
         self.identityContext = identityContext
@@ -36,6 +46,40 @@ public final class NavigationViewModel: ObservableObject {
         identityContext.service.announcementCountPublisher()
             .assignErrorsToAlertItem(to: \.alertItem, on: self)
             .assign(to: &$announcementCount)
+
+        // Track
+        identityContext.$identity
+            .combineLatest(
+                identityContext.service.listsPublisher()
+                    .assignErrorsToAlertItem(to: \.alertItem, on: self),
+                identityContext.service.followedTagsPublisher()
+                    .assignErrorsToAlertItem(to: \.alertItem, on: self)
+            )
+            .map { identity, lists, followedTags in
+                var timelines = [Timeline]()
+
+                if identityContext.identity.authenticated {
+                    timelines.append(contentsOf: Timeline.authenticatedDefaults)
+                } else {
+                    timelines.append(contentsOf: Timeline.unauthenticatedDefaults)
+                }
+
+                timelines.append(contentsOf: lists)
+
+                for followedTag in followedTags {
+                    timelines.append(.tag(followedTag.name))
+                }
+
+                return timelines
+            }
+            .assign(to: &$timelines)
+
+        // TODO: (Vyr) handle timeline window offset, timelines being deleted
+        $timelines
+            .map { timelines in
+                Array(timelines.prefix(Self.maxVisibleTimelines))
+            }
+            .assign(to: &$visibleTimelines)
     }
 }
 
@@ -45,14 +89,6 @@ public extension NavigationViewModel {
         case explore
         case notifications
         case messages
-    }
-
-    var timelines: [Timeline] {
-        if identityContext.identity.authenticated {
-            return Timeline.authenticatedDefaults
-        } else {
-            return Timeline.unauthenticatedDefaults
-        }
     }
 
     func refreshIdentity() {
