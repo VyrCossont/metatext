@@ -6,11 +6,16 @@ import Mastodon
 import Semver
 
 public enum AccountEndpoint {
+    /// Fetch the current user's profile with extra info used when editing it.
     case verifyCredentials
+    /// Update the current user's profile.
     case updateCredentials(UpdateCredentialsRequest)
-    case accounts(id: Account.Id)
+    /// Delete the current user's avatar.
     case deleteAvatar
+    /// Delete the current user's header.
     case deleteHeader
+    /// Fetch any account by ID.
+    case accounts(id: Account.Id)
 }
 
 extension AccountEndpoint: Endpoint {
@@ -70,6 +75,8 @@ extension AccountEndpoint: Endpoint {
                 .gotosocial: "0.16.0-0"
             ]
         case let .updateCredentials(request):
+            // TODO: (Vyr) go through every implementation to check supported fields
+            // TODO: (Vyr) snac2 doesn't have this API endpoint at all
             return request.requires
         }
     }
@@ -78,61 +85,62 @@ extension AccountEndpoint: Endpoint {
 public extension AccountEndpoint {
     /// - See: <https://docs.joinmastodon.org/methods/accounts/#form-data-parameters-1>
     struct UpdateCredentialsRequest {
-        let displayName: String?
-        let note: String?
-        let avatar: Data?
-        let avatarMimeType: String?
-        let header: Data?
-        let headerMimeType: String?
-        let locked: Bool?
-        let bot: Bool?
-        let discoverable: Bool?
-        let hideCollections: Bool?
-        /// Mastodon 4.2 only (so far).
-        let indexable: Bool?
-        let fields: [Account.Source.Field]?
-        let privacy: Status.Visibility?
-        let sensitive: Bool?
-        let language: String?
+        public var displayName: String?
+        public var note: String?
+        public var avatar: Data?
+        public var avatarMimeType: String?
+        public var header: Data?
+        public var headerMimeType: String?
+        public var locked: Bool?
+        public var bot: Bool?
+        public var discoverable: Bool?
+        /// Requires Mastodon 4.1 or GotoSocial 0.15.
+        public var hideCollections: Bool?
+        /// Requires Mastodon 4.2.
+        public var indexable: Bool?
+        public var fields: [Account.Source.Field]?
+        public var privacy: Status.Visibility?
+        public var sensitive: Bool?
+        public var language: String?
 
         /// Default MIME type to interpret posts as.
         /// GotoSocial only: `text/plain` or `text/markdown`.
         /// Glitch doesn't extend the API to set this.
-        let statusContentType: String?
+        public var statusContentType: ContentType?
 
         /// File name of theme to use. Send empty string to unset it.
         /// GotoSocial only.
-        let theme: String?
+        public var theme: String?
 
         /// Custom CSS to use when rendering this account's profile or statuses.
         /// Limited to 5k chars by default.
         /// GotoSocial only.
-        let customCSS: String?
+        public var customCSS: String?
 
         /// Enable RSS feed for this account's public posts.
         /// GotoSocial only.
-        let enableRSS: Bool?
+        public var enableRSS: Bool?
 
         public init(
-            displayName: String?,
-            note: String?,
-            avatar: Data?,
-            avatarMimeType: String?,
-            header: Data?,
-            headerMimeType: String?,
-            locked: Bool?,
-            bot: Bool?,
-            discoverable: Bool?,
-            hideCollections: Bool?,
-            indexable: Bool?,
-            fields: [Account.Source.Field]?,
-            privacy: Status.Visibility?,
-            sensitive: Bool?,
-            language: String?,
-            statusContentType: String?,
-            theme: String?,
-            customCSS: String?,
-            enableRSS: Bool?
+            displayName: String? = nil,
+            note: String? = nil,
+            avatar: Data? = nil,
+            avatarMimeType: String? = nil,
+            header: Data? = nil,
+            headerMimeType: String? = nil,
+            locked: Bool? = nil,
+            bot: Bool? = nil,
+            discoverable: Bool? = nil,
+            hideCollections: Bool? = nil,
+            indexable: Bool? = nil,
+            fields: [Account.Source.Field]? = nil,
+            privacy: Status.Visibility? = nil,
+            sensitive: Bool? = nil,
+            language: String? = nil,
+            statusContentType: ContentType? = nil,
+            theme: String? = nil,
+            customCSS: String? = nil,
+            enableRSS: Bool? = nil
         ) {
             self.displayName = displayName
             self.note = note
@@ -155,7 +163,29 @@ public extension AccountEndpoint {
             self.enableRSS = enableRSS
         }
 
-        public var multipartFormData: [String: MultipartFormValue] {
+        public var isEmpty: Bool {
+            displayName == nil &&
+            note == nil &&
+            avatar == nil &&
+            avatarMimeType == nil &&
+            header == nil &&
+            headerMimeType == nil &&
+            locked == nil &&
+            bot == nil &&
+            discoverable == nil &&
+            hideCollections == nil &&
+            indexable == nil &&
+            fields == nil &&
+            privacy == nil &&
+            sensitive == nil &&
+            language == nil &&
+            statusContentType == nil &&
+            theme == nil &&
+            customCSS == nil &&
+            enableRSS == nil
+        }
+
+        var multipartFormData: [String: MultipartFormValue] {
             var params = [String: MultipartFormValue]()
 
             params.add("display_name", displayName)
@@ -170,7 +200,7 @@ public extension AccountEndpoint {
             params.add("source[privacy]", privacy?.rawValue)
             params.add("source[sensitive]", sensitive)
             params.add("source[language]", language)
-            params.add("source[status_content_type]", statusContentType)
+            params.add("source[status_content_type]", statusContentType?.rawValue)
             params.add("theme", theme)
             params.add("custom_css", customCSS)
             params.add("enable_rss", enableRSS)
@@ -186,37 +216,39 @@ public extension AccountEndpoint {
         }
 
         var requires: APICapabilityRequirements? {
+            // Requirement for each parameter.
+            var paramRequirements = [APICapabilityRequirements]()
+
             // Mastodon-specific feature.
             if indexable != nil {
-                return .mastodonForks("3.5.0")
+                paramRequirements.append(.mastodonForks("4.2.0"))
             }
 
             // GotoSocial-specific features.
-            func requireAtLeast(_ accumulator: inout Semver?, _ requirement: Semver) {
-                if let version = accumulator {
-                    accumulator = max(version, requirement)
-                } else {
-                    accumulator = requirement
-                }
-            }
-            var gtsVersion: Semver?
             if statusContentType != nil {
-                requireAtLeast(&gtsVersion, .assumeAvailable)
+                paramRequirements.append([.gotosocial: .assumeAvailable])
             }
             if theme != nil {
-                requireAtLeast(&gtsVersion, "0.15.0")
+                paramRequirements.append([.gotosocial: "0.15.0"])
             }
             if customCSS != nil {
-                requireAtLeast(&gtsVersion, .assumeAvailable)
+                paramRequirements.append([.gotosocial: .assumeAvailable])
             }
             if enableRSS != nil {
-                requireAtLeast(&gtsVersion, .assumeAvailable)
-            }
-            if let gtsVersion = gtsVersion {
-                return [.gotosocial: gtsVersion]
+                paramRequirements.append([.gotosocial: .assumeAvailable])
             }
 
-            return nil
+            // Features supported by both Mastodon and GotoSocial but nothing else.
+            if hideCollections != nil {
+                paramRequirements.append(.mastodonForks("4.1.0") | [.gotosocial: "0.15.0"])
+            }
+
+            // If there are no implementation-specific requirements, return early.
+            guard let first = paramRequirements.first else { return nil }
+
+            // Return a requirement that covers all parameters.
+            // In the event of an illegal combination of parameters, this will be unsatisifable.
+            return paramRequirements.dropFirst().reduce(first, { $0 & $1 })
         }
     }
 }

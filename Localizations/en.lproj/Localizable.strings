@@ -64,6 +64,7 @@
 "account.remove-follow-suggestion-button.accessibility-label" = "Remove suggested account";
 "account.request" = "Request";
 "account.request.cancel" = "Cancel follow request";
+"account.role.accessibility-label-%@" = "Instance role: %@";
 "account.statuses.post" = "Posts";
 "account.statuses.toot" = "Toots";
 "account.statuses-and-replies.post" = "Posts & Replies";
@@ -494,6 +495,11 @@
 "status.filtered.accessibility-label-%@" = "Filtered: %@";
 "status.filtered.show" = "Show filtered";
 "status.filtered.re-hide" = "Re-hide filtered";
+"status.format.text" = "Plain text";
+"status.format.markdown" = "Markdown";
+"status.format.html" = "HTML";
+"status.format.bbcode" = "BBCode";
+"status.format.mfm" = "Misskey-flavored Markdown";
 "status.interaction.federated" = "Federated";
 "status.interaction.boostable" = "Boostable";
 "status.interaction.replyable" = "Replyable";

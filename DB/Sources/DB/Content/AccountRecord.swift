@@ -29,6 +29,7 @@ struct AccountRecord: ContentDatabaseRecord, Hashable {
     let limited: Bool
     let movedId: Account.Id?
     let role: Account.Role?
+    let roles: [Account.Role]?
     let muteExpiresAt: Date?
 }
 
@@ -58,6 +59,7 @@ extension AccountRecord {
         static let limited = Column(CodingKeys.limited)
         static let movedId = Column(CodingKeys.movedId)
         static let role = Column(CodingKeys.role)
+        static let roles = Column(CodingKeys.roles)
         static let muteExpiresAt = Column(CodingKeys.muteExpiresAt)
     }
 }
@@ -113,6 +115,7 @@ extension AccountRecord {
         limited = account.limited
         movedId = account.moved?.id
         role = account.role
+        roles = account.roles
         muteExpiresAt = account.muteExpiresAt
     }
 }

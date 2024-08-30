@@ -27,6 +27,7 @@
 		943CF1122A731FC30032A0D2 /* AppIconTransPaint@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 943CF10A2A731FC20032A0D2 /* AppIconTransPaint@2x.png */; };
 		943CF1132A731FC30032A0D2 /* AppIconClassic@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 943CF10B2A731FC20032A0D2 /* AppIconClassic@3x.png */; };
 		943CF1142A731FC30032A0D2 /* AppIconRainbow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 943CF10C2A731FC20032A0D2 /* AppIconRainbow@2x.png */; };
+		945F6A902C5AF39D005817E5 /* RolePillsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 945F6A8F2C5AF39D005817E5 /* RolePillsView.swift */; };
 		9460331F2A2D3B8E00F5757E /* NotificationReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9460331E2A2D3B8E00F5757E /* NotificationReportView.swift */; };
 		946923072BB5FA0A00628836 /* AlertItem+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946923062BB5FA0A00628836 /* AlertItem+Extensions.swift */; };
 		946923092BB6116600628836 /* AnnotatedAPIError+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946923082BB6116600628836 /* AnnotatedAPIError+Extensions.swift */; };
@@ -48,8 +49,9 @@
 		94B5C6D92A741DC40076DB01 /* ActivityPub@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 94B5C6D72A741DC40076DB01 /* ActivityPub@2x.png */; };
 		94B5C6DA2A741DC40076DB01 /* ActivityPub@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 94B5C6D82A741DC40076DB01 /* ActivityPub@3x.png */; };
 		94C282782A7EFCF0005E192D /* Identity.Preferences.TintColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C282772A7EFCF0005E192D /* Identity.Preferences.TintColor+Extensions.swift */; };
-		94D77DF92C55C92400B9E8F6 /* Common in Frameworks */ = {isa = PBXBuildFile; productRef = 94D77DF82C55C92400B9E8F6 /* Common */; };
 		94CC92082C03F8AB00FD7587 /* HexColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94CC92072C03F8AB00FD7587 /* HexColor+Extensions.swift */; };
+		94CC920A2C040F9300FD7587 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94CC92092C040F9300FD7587 /* EditProfileView.swift */; };
+		94D77DF92C55C92400B9E8F6 /* Common in Frameworks */ = {isa = PBXBuildFile; productRef = 94D77DF82C55C92400B9E8F6 /* Common */; };
 		94D9E1B32BC60B47003C1C18 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 94D9E1B22BC60B47003C1C18 /* PrivacyInfo.xcprivacy */; };
 		94E174AB299AEC2D00D040B3 /* Report+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E174AA299AEC2D00D040B3 /* Report+Extensions.swift */; };
 		94E6C2482991A235003771D1 /* PostingDefaultLanguageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E6C2472991A235003771D1 /* PostingDefaultLanguageView.swift */; };
@@ -393,6 +395,7 @@
 		943CF10C2A731FC20032A0D2 /* AppIconRainbow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIconRainbow@2x.png"; sourceTree = "<group>"; };
 		943CF1152A7324620032A0D2 /* Asset Originals */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Asset Originals"; sourceTree = "<group>"; };
 		943D4FFF2AD5B89B0097C4DF /* MastodonAPI GtS integration.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "MastodonAPI GtS integration.xctestplan"; sourceTree = "<group>"; };
+		945F6A8F2C5AF39D005817E5 /* RolePillsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RolePillsView.swift; sourceTree = "<group>"; };
 		9460331E2A2D3B8E00F5757E /* NotificationReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationReportView.swift; sourceTree = "<group>"; };
 		946455422C46E2DA00CABF3D /* Macros */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Macros; sourceTree = "<group>"; };
 		946923062BB5FA0A00628836 /* AlertItem+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlertItem+Extensions.swift"; sourceTree = "<group>"; };
@@ -423,6 +426,7 @@
 		94C282772A7EFCF0005E192D /* Identity.Preferences.TintColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Identity.Preferences.TintColor+Extensions.swift"; sourceTree = "<group>"; };
 		94C733B32C55C61A00BF25FC /* Common */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Common; sourceTree = "<group>"; };
 		94CC92072C03F8AB00FD7587 /* HexColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HexColor+Extensions.swift"; sourceTree = "<group>"; };
+		94CC92092C040F9300FD7587 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		94D9E1B22BC60B47003C1C18 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		94E174AA299AEC2D00D040B3 /* Report+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Report+Extensions.swift"; sourceTree = "<group>"; };
 		94E6C2472991A235003771D1 /* PostingDefaultLanguageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingDefaultLanguageView.swift; sourceTree = "<group>"; };
@@ -815,15 +819,16 @@
 		D021A66425C3E170008A0C0D /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
-				947B6CED2A70824800630B24 /* Timeline Actions */,
 				943141D6299AADD900D90FC4 /* AboutInstanceView.swift */,
 				D021A62B25C38570008A0C0D /* AboutView.swift */,
 				D021A63525C38ADB008A0C0D /* AcknowledgmentsView.swift */,
 				D02D33EE25EE04CC000A35CC /* AddRemoveFromListsView.swift */,
 				D0D4302C25F0904D00BE5504 /* AppIconPreferencesView.swift */,
+				94E7B18E2A5A271B00A1F1DA /* CloseButton.swift */,
 				D08E52602579D2E100FA2C5F /* DomainBlocksView.swift */,
 				D0BEB21024FA2A90001B0F04 /* EditFilterView.swift */,
 				947E728E29A9618900155DD2 /* EditNoteView.swift */,
+				94CC92092C040F9300FD7587 /* EditProfileView.swift */,
 				D0BEB20424FA1107001B0F04 /* FiltersView.swift */,
 				94E6C2502996E9C7003771D1 /* FollowedTagsView.swift */,
 				D0BEB1FE24F9E5BB001B0F04 /* ListsView.swift */,
@@ -832,11 +837,12 @@
 				D0C7D42D24F76169001EBDBB /* NotificationTypesPreferencesView.swift */,
 				94E6C2492991A23C003771D1 /* Preferences */,
 				D0B32F4F250B373600311912 /* RegistrationView.swift */,
+				945F6A8F2C5AF39D005817E5 /* RolePillsView.swift */,
 				D0C7D42724F76169001EBDBB /* RootView.swift */,
 				D0C7D42924F76169001EBDBB /* SecondaryNavigationView.swift */,
 				94B0BCD229859B750075E234 /* StatusEditHistoryView.swift */,
+				947B6CED2A70824800630B24 /* Timeline Actions */,
 				D021A66925C3E19D008A0C0D /* View Controller Representables */,
-				94E7B18E2A5A271B00A1F1DA /* CloseButton.swift */,
 			);
 			path = SwiftUI;
 			sourceTree = "<group>";
@@ -1596,6 +1602,7 @@
 				D025B14D25C4E482001C69A8 /* ImageCacheConfiguration.swift in Sources */,
 				D01EF22425182B1F00650C6B /* AccountHeaderView.swift in Sources */,
 				94059CDA2BC98E3B00BF9319 /* AttributedString+Extensions.swift in Sources */,
+				945F6A902C5AF39D005817E5 /* RolePillsView.swift in Sources */,
 				D0D8B0312622398F00A874A4 /* AnnouncementTableViewCell.swift in Sources */,
 				941F79CC2A243418007FCC65 /* MultiNotificationContentConfiguration.swift in Sources */,
 				D059373E25AB8D5200754FDF /* CompositionPollOptionView.swift in Sources */,
@@ -1634,6 +1641,7 @@
 				D0C7D4C424F7616A001EBDBB /* AppDelegate.swift in Sources */,
 				D0C7D49924F7616A001EBDBB /* AddIdentityView.swift in Sources */,
 				D0DDA77F25C6058300FA0F91 /* ExploreSectionHeaderView.swift in Sources */,
+				94CC920A2C040F9300FD7587 /* EditProfileView.swift in Sources */,
 				D0FCC105259C4E61000B67DF /* ComposeStatusViewController.swift in Sources */,
 				D087671625BAA8C0001FDD43 /* ExploreViewController.swift in Sources */,
 				D0D2AC6725BD0484003D5DF2 /* LineChartView.swift in Sources */,

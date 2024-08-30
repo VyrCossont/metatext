@@ -92,6 +92,36 @@ public extension IdentityService {
             .eraseToAnyPublisher()
     }
 
+    /// Fetch the user's profile with extra info used when editing it.
+    func getProfileWithSource() async throws -> Account {
+        return try await mastodonAPIClient.request(AccountEndpoint.verifyCredentials)
+    }
+
+    /// Apply profile changes to the profile and then to the identity database.
+    func updateProfile(
+        request: AccountEndpoint.UpdateCredentialsRequest?,
+        deleteAvatar: Bool,
+        deleteHeader: Bool
+    ) async throws {
+        var account: Account?
+
+        if let request = request {
+            account = try await mastodonAPIClient.request(AccountEndpoint.updateCredentials(request))
+        }
+
+        if deleteAvatar {
+            account = try await mastodonAPIClient.request(AccountEndpoint.deleteAvatar)
+        }
+
+        if deleteHeader {
+            account = try await mastodonAPIClient.request(AccountEndpoint.deleteHeader)
+        }
+
+        if let account = account {
+            try await identityDatabase.updateAccount(account, id: id).finished
+        }
+    }
+
     func refreshServerPreferences() -> AnyPublisher<Never, Error> {
         mastodonAPIClient.request(PreferencesEndpoint.preferences)
             .flatMap { identityDatabase.updatePreferences($0, id: id) }

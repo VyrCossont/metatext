@@ -52,7 +52,18 @@ public final class Account: Codable, Identifiable {
     public let hideCollections: Bool?
 
     public let moved: Account?
+
+    /// Private role used for user permissions.
+    /// In Mastodon 4 and GotoSocial 0.17, this is only available through the `verify_credentials` API method.
+    /// In GotoSocial 0.16, it's always available, but never has an ID or permissions.
     public let role: Role?
+
+    /// Public roles.
+    /// Available starting with Mastodon 4.1 and GotoSocial 0.17.
+    /// Note that Mastodon hasn't officially documented this yet.
+    /// - See: https://github.com/mastodon/documentation/issues/1483
+    /// - See: https://github.com/superseriousbusiness/gotosocial/pull/3136
+    public let roles: [Role]?
 
     /// File name of theme to use.
     /// GotoSocial only.
@@ -104,6 +115,7 @@ public final class Account: Codable, Identifiable {
         moved: Account?,
         source: Source?,
         role: Role?,
+        roles: [Role]?,
         theme: String?,
         enableRSS: Bool?,
         customCSS: String?,
@@ -131,6 +143,7 @@ public final class Account: Codable, Identifiable {
         self.moved = moved
         self.source = source
         self.role = role
+        self.roles = roles
         self.muteExpiresAt = muteExpiresAt
         self.theme = theme
         self.enableRss = enableRSS
@@ -184,10 +197,10 @@ public extension Account {
     }
 
     /// Local user role assigned by the server admin.
-    /// Note that while Mastodon roles may have the full set of properties,
-    /// GotoSocial roles only have a name.
+    /// We use this type for both permissions and display roles.
     /// - See: <https://docs.joinmastodon.org/entities/Role/>
     struct Role: Codable, Hashable {
+        // Not `Identifiable` because the ID is optional.
         public typealias Id = String
 
         public let id: Id?
@@ -303,6 +316,7 @@ extension Account: Hashable {
             lhs.moved == rhs.moved &&
             lhs.source == rhs.source &&
             lhs.role == rhs.role &&
+            lhs.roles == rhs.roles &&
             lhs.theme == rhs.theme &&
             lhs.enableRss == rhs.enableRss &&
             lhs.customCss == rhs.customCss &&

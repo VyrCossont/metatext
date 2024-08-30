@@ -1,4 +1,4 @@
-// swift-tools-version: 5.8
+// swift-tools-version: 5.9
 
 import PackageDescription
 
@@ -16,6 +16,7 @@ let package = Package(
     dependencies: [
         .package(path: "AppMetadata"),
         .package(path: "AppUrls"),
+        .package(path: "Macros"),
         .package(path: "Siren"),
         .package(
             url: "https://github.com/scinfu/SwiftSoup.git",
@@ -25,7 +26,7 @@ let package = Package(
     targets: [
         .target(
             name: "Mastodon",
-            dependencies: ["AppMetadata", "AppUrls", "Siren", "SwiftSoup"]),
+            dependencies: ["AppMetadata", "AppUrls", "Macros", "Siren", "SwiftSoup"]),
         .testTarget(
             name: "MastodonTests",
             dependencies: ["Mastodon"])

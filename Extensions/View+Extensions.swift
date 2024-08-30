@@ -61,7 +61,7 @@ struct ToastViewModifier: ViewModifier {
                 ToastView(alertItem: alertItem) {
                     self.alertItem.wrappedValue = nil
                 }
-                .padding(.top, 48)
+                .padding(.top, 64)
                 .zIndex(1)
                 .onTapGesture {
                     self.alertItem.wrappedValue = nil

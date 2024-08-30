@@ -2,6 +2,7 @@
 
 import Foundation
 import SDWebImage
+import SwiftUI
 import UIKit
 import ViewModels
 
@@ -31,6 +32,8 @@ final class AccountHeaderView: UIView {
     /// If an account has migrated, tapping this will navigate to their new account.
     let movedButton = UIButton()
     let accountTypeStatusCountJoinedStackView = UIStackView()
+    /// List of instance roles.
+    let rolesViewController = UIHostingController<AnyView>(rootView: .init(EmptyView()))
     let accountTypeBotImageView = UIImageView()
     let accountTypeGroupImageView = UIImageView()
     let accountTypeLabel = UILabel()
@@ -134,6 +137,12 @@ final class AccountHeaderView: UIView {
 
                 accountLabel.text = accountViewModel.accountName
 
+                rolesViewController.rootView = .init(RolePillsView(roles: accountViewModel.displayRoles))
+                if #unavailable(iOS 16.0) {
+                    // Do what .sizingOptions does for us in newer versions.
+                    rolesViewController.view.invalidateIntrinsicContentSize()
+                }
+
                 if let movedAccountName = accountViewModel.movedAccountName {
                     var movedButtonConfiguration = UIButton.Configuration.gray()
                     movedButtonConfiguration.title = NSLocalizedString("account.moved", comment: "")
@@ -210,13 +219,18 @@ final class AccountHeaderView: UIView {
                 }
 
                 let noteFont = UIFont.preferredFont(forTextStyle: .callout)
-                let mutableNote = NSMutableAttributedString(attributedString: accountViewModel.note.nsFormatSiren(.callout))
+                let mutableNote = NSMutableAttributedString(
+                    attributedString: accountViewModel.note.nsFormatSiren(.callout)
+                )
                 let noteRange = NSRange(location: 0, length: mutableNote.length)
                 mutableNote.removeAttribute(.font, range: noteRange)
                 mutableNote.addAttributes(
-                    [.font: noteFont as Any,
-                     .foregroundColor: UIColor.label],
-                    range: noteRange)
+                    [
+                        .font: noteFont as Any,
+                        .foregroundColor: UIColor.label,
+                    ],
+                    range: noteRange
+                )
                 mutableNote.insert(emojis: accountViewModel.emojis,
                                    view: noteTextView,
                                    identityContext: viewModel.identityContext)
@@ -450,6 +464,12 @@ private extension AccountHeaderView {
         accountLabel.setContentHuggingPriority(.required, for: .horizontal)
         accountLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
 
+        accountStackView.addArrangedSubview(rolesViewController.view)
+        if #available(iOS 16.0, *) {
+            // See the corresponding #unavailable for iOS 15 equivalent.
+            rolesViewController.sizingOptions = [.intrinsicContentSize]
+        }
+
         accountStackView.addArrangedSubview(lockedImageView)
         lockedImageView.image = UIImage(
             systemName: "lock.fill",
@@ -669,7 +689,7 @@ private extension AccountHeaderView {
             baseStackView.topAnchor.constraint(equalTo: avatarBackgroundView.bottomAnchor, constant: .defaultSpacing),
             baseStackView.leadingAnchor.constraint(equalTo: readableContentGuide.leadingAnchor),
             baseStackView.trailingAnchor.constraint(equalTo: readableContentGuide.trailingAnchor),
-            baseStackView.bottomAnchor.constraint(equalTo: readableContentGuide.bottomAnchor)
+            baseStackView.bottomAnchor.constraint(equalTo: readableContentGuide.bottomAnchor),
         ])
     }
 

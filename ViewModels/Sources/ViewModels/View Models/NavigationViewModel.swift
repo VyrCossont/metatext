@@ -107,6 +107,11 @@ public extension NavigationViewModel {
         navigationsSubject.send(.profile(identityContext.service.navigationService.profileService(id: id)))
     }
 
+    var hasNativeEditProfile: Bool {
+        AccountEndpoint.updateCredentials(.init())
+            .canCallWith(identityContext.apiCapabilities)
+    }
+
     var hasEditProfile: Bool {
         identityContext.service.navigationService.editProfile() != nil
     }
@@ -228,5 +233,13 @@ public extension NavigationViewModel {
         CollectionItemsViewModel(
             collectionService: identityContext.service.announcementsService(),
             identityContext: identityContext)
+    }
+
+    @MainActor
+    func editProfileViewModel() -> EditProfileViewModel {
+        .init(
+            identityService: identityContext.service,
+            identityContext: identityContext
+        )
     }
 }

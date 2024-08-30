@@ -43,7 +43,9 @@ public extension Identity {
         public let thumbnail: UnicodeURL?
         public let version: String
         public let maxTootChars: Int?
-        public let maxReactions: Int?
+        public let configuration: Mastodon.Instance.Configuration?
+
+        public var maxReactions: Int? { configuration?.reactions?.maxReactions }
     }
 
     struct Account: Codable, Hashable {

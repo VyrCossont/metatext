@@ -23,7 +23,17 @@ struct SecondaryNavigationView: View {
                         }
                     }
                 }
-                if viewModel.hasEditProfile {
+                if viewModel.hasNativeEditProfile {
+                    NavigationLink(
+                        destination: EditProfileView(viewModel: viewModel.editProfileViewModel())
+                    ) {
+                        Label {
+                            Text("secondary-navigation.edit-profile").foregroundColor(.primary)
+                        } icon: {
+                            Image(systemName: "pencil")
+                        }
+                    }
+                } else if viewModel.hasEditProfile {
                     Button {
                         viewModel.navigateToEditProfile()
                     } label: {

@@ -2,13 +2,18 @@
 
 import Mastodon
 import SDWebImage
+import SwiftUI
 import UIKit
 import ViewModels
 
 final class AccountView: UIView {
     let avatarImageView = SDAnimatedImageView()
     let displayNameLabel = AnimatedAttachmentLabel()
+
+    let accountStack = UIStackView()
     let accountLabel = UILabel()
+    /// List of instance roles.
+    let rolesViewController = UIHostingController<AnyView>(rootView: .init(EmptyView()))
 
     let accountTypeStack = UIStackView()
     let accountTypeBotImageView = UIImageView()
@@ -162,6 +167,20 @@ private extension AccountView {
         avatarImageView.layer.cornerRadius = .avatarDimension / 2
         avatarImageView.clipsToBounds = true
 
+        accountStack.axis = .horizontal
+        accountStack.spacing = .ultraCompactSpacing
+
+        accountStack.addArrangedSubview(accountLabel)
+
+        accountStack.addArrangedSubview(rolesViewController.view)
+        if #available(iOS 16.0, *) {
+            // See the corresponding #unavailable for iOS 15 equivalent.
+            rolesViewController.sizingOptions = [.intrinsicContentSize]
+        }
+
+        // Spacer
+        accountStack.addArrangedSubview(UIView())
+
         accountTypeStack.axis = .horizontal
         accountTypeStack.spacing = .ultraCompactSpacing
 
@@ -214,7 +233,7 @@ private extension AccountView {
         verticalStackView.axis = .vertical
         verticalStackView.spacing = .compactSpacing
         verticalStackView.addArrangedSubview(displayNameLabel)
-        verticalStackView.addArrangedSubview(accountLabel)
+        verticalStackView.addArrangedSubview(accountStack)
         verticalStackView.addArrangedSubview(movedAccountStack)
         verticalStackView.addArrangedSubview(verifiedStack)
         verticalStackView.addArrangedSubview(accountTypeStack)
@@ -425,7 +444,7 @@ private extension AccountView {
             stackView.leadingAnchor.constraint(equalTo: readableContentGuide.leadingAnchor),
             stackView.topAnchor.constraint(equalTo: readableContentGuide.topAnchor),
             stackView.bottomAnchor.constraint(equalTo: readableContentGuide.bottomAnchor),
-            stackView.trailingAnchor.constraint(equalTo: readableContentGuide.trailingAnchor)
+            stackView.trailingAnchor.constraint(equalTo: readableContentGuide.trailingAnchor),
         ])
 
         isAccessibilityElement = true
@@ -460,9 +479,17 @@ private extension AccountView {
             movedAccountStack.isHidden = true
         }
 
-        accountTypeStack.isHidden = !(viewModel.isBot || viewModel.isGroup)
+        accountTypeStack.isHidden = !(viewModel.isBot || viewModel.isGroup || !viewModel.displayRoles.isEmpty)
+
+        rolesViewController.rootView = .init(RolePillsView(roles: viewModel.displayRoles))
+        if #unavailable(iOS 16.0) {
+            // Do what .sizingOptions does for us in newer versions.
+            rolesViewController.view.invalidateIntrinsicContentSize()
+        }
+
         accountTypeBotImageView.isHidden = !viewModel.isBot
         accountTypeGroupImageView.isHidden = !viewModel.isGroup
+        accountTypeLabel.isHidden = !(viewModel.isBot || viewModel.isGroup)
         accountTypeLabel.text = viewModel.accountTypeText
 
         if let firstVerifiedField = viewModel.fields.first(where: { $0.verifiedAt != nil }) {
@@ -487,9 +514,12 @@ private extension AccountView {
 
             mutableNote.removeAttribute(.font, range: noteRange)
             mutableNote.addAttributes(
-                [.font: noteFont as Any,
-                 .foregroundColor: UIColor.label],
-                range: noteRange)
+                [
+                    .font: noteFont as Any,
+                    .foregroundColor: UIColor.label,
+                ],
+                range: noteRange
+            )
             mutableNote.insert(emojis: viewModel.emojis, view: noteTextView, identityContext: viewModel.identityContext)
             mutableNote.resizeAttachments(toLineHeight: noteFont.lineHeight)
 
@@ -661,7 +691,7 @@ private extension AccountView {
                     self?.accountConfiguration.viewModel.rejectFollowRequest()
 
                     return true
-                }
+                },
             ]
         } else if isFollowSuggestion {
             accessibilityCustomActions = [
@@ -674,51 +704,51 @@ private extension AccountView {
                     self?.accountConfiguration.viewModel.rejectFollowRequest()
 
                     return true
-                }
+                },
             ]
         } else if viewModel.configuration == .mute, let relationship = viewModel.relationship {
             if relationship.muting {
                 accessibilityCustomActions = [
                     UIAccessibilityCustomAction(
-                        name: NSLocalizedString(
-                            "account.unmute",
-                            comment: "")) { [weak self] _ in
-                            self?.accountConfiguration.viewModel.confirmUnmute()
+                        name: NSLocalizedString("account.unmute", comment: "")
+                    ) { [weak self] _ in
+                        self?.accountConfiguration.viewModel.confirmUnmute()
 
-                            return true
-                        }]
+                        return true
+                    },
+                ]
             } else {
                 accessibilityCustomActions = [
                     UIAccessibilityCustomAction(
-                        name: NSLocalizedString(
-                            "account.mute",
-                            comment: "")) { [weak self] _ in
-                            self?.accountConfiguration.viewModel.confirmMute()
+                        name: NSLocalizedString("account.mute", comment: "")
+                    ) { [weak self] _ in
+                        self?.accountConfiguration.viewModel.confirmMute()
 
-                            return true
-                        }]
+                        return true
+                    },
+                ]
             }
         } else if viewModel.configuration == .block, let relationship = viewModel.relationship {
             if relationship.blocking {
                 accessibilityCustomActions = [
                     UIAccessibilityCustomAction(
-                        name: NSLocalizedString(
-                            "account.unblock",
-                            comment: "")) { [weak self] _ in
-                            self?.accountConfiguration.viewModel.confirmUnblock()
+                        name: NSLocalizedString("account.unblock", comment: "")
+                    ) { [weak self] _ in
+                        self?.accountConfiguration.viewModel.confirmUnblock()
 
-                            return true
-                        }]
+                        return true
+                    },
+                ]
             } else {
                 accessibilityCustomActions = [
                     UIAccessibilityCustomAction(
-                        name: NSLocalizedString(
-                            "account.block",
-                            comment: "")) { [weak self] _ in
-                            self?.accountConfiguration.viewModel.confirmBlock()
+                        name: NSLocalizedString("account.block", comment: "")
+                    ) { [weak self] _ in
+                        self?.accountConfiguration.viewModel.confirmBlock()
 
-                            return true
-                        }]
+                        return true
+                    },
+                ]
             }
         } else {
             accessibilityCustomActions = []

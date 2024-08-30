@@ -98,6 +98,13 @@ extension IdentityDatabase {
             }
         }
 
+        migrator.registerMigration("1.7.4-instance-store-full-configuration") { db in
+            try db.alter(table: "instance") { t in
+                t.drop(column: "maxReactions")
+                t.add(column: "configuration", .blob)
+            }
+        }
+
         return migrator
     }
 }

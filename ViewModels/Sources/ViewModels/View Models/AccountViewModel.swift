@@ -90,6 +90,23 @@ public extension AccountViewModel {
         }
     }
 
+    /// Display roles.
+    /// Falls back to permissions role for GotoSocial versions older than 0.17.
+    var displayRoles: [RoleViewModel] {
+        let allRoles: [Account.Role] = if let roles = accountService.account.roles {
+            roles
+        } else if let role = accountService.account.role {
+            [role]
+        } else {
+            []
+        }
+        // Assume all roles that aren't explicitly not highlighted should be shown.
+        // If we can see the role at all, it's probably safe to display.
+        return allRoles
+            .filter { $0.highlighted ?? true }
+            .map(RoleViewModel.init)
+    }
+
     var suggestionSourceText: String {
         guard let suggestionSource = suggestionSource else { return "" }
         switch suggestionSource {

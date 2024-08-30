@@ -461,6 +461,7 @@ extension ContentDatabase {
                     t.add(column: "suspended", .boolean).notNull().defaults(to: false)
                     t.add(column: "limited", .boolean).notNull().defaults(to: false)
                     t.add(column: "role", .blob)
+                    t.add(column: "roles", .blob)
                     t.add(column: "lastStatusAt", .datetime)
                     t.add(column: "muteExpiresAt", .datetime)
                 }

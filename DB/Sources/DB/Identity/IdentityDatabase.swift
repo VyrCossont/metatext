@@ -70,7 +70,7 @@ public extension IdentityDatabase {
                 thumbnail: instance.thumbnail,
                 version: instance.version,
                 maxTootChars: instance.unifiedMaxTootChars,
-                maxReactions: instance.configuration?.reactions?.maxReactions
+                configuration: instance.configuration
             )
                 .save($0)
             try IdentityRecord

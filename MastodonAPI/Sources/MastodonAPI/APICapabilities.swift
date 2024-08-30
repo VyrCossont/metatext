@@ -124,9 +124,31 @@ public struct APICapabilityRequirements {
         return version >= minVersion
     }
 
+    /// Merge two requirements, where version requirements can be satisfied
+    /// by implementations on the left or implementations on the right.
+    /// Used to build wider requirements: marking an API as supported by either GotoSocial or Mastodon.
+    /// Versions on the right override versions on the left.
     public static func | (lhs: Self, rhs: Self) -> Self {
         self.init(
             minVersions: lhs.minVersions.merging(rhs.minVersions, uniquingKeysWith: { $1 }),
+            requiredFeatures: lhs.requiredFeatures.union(rhs.requiredFeatures)
+        )
+    }
+
+    /// Merge two requirements, where version requirements have to be satisfied by
+    /// both implementations on the left and implementations on the right.
+    /// Used to build narrower requirements: marking an API call that requires GtS 0.14 & 0.15,
+    /// and thus resulting in a requirement for GtS 0.15.
+    /// An API call that requires Mastodon 4.3 & GtS 0.16 would result in an empty, unsatisfiable requirement.
+    public static func & (lhs: Self, rhs: Self) -> Self {
+        var minVersions = [APIFlavor: Semver]()
+        for (flavor, lhsVersion) in lhs.minVersions {
+            guard let rhsVersion = rhs.minVersions[flavor] else { continue }
+            minVersions[flavor] = max(lhsVersion, rhsVersion)
+        }
+
+        return self.init(
+            minVersions: minVersions,
             requiredFeatures: lhs.requiredFeatures.union(rhs.requiredFeatures)
         )
     }

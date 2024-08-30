@@ -56,6 +56,7 @@ private extension Account {
             moved: moved,
             source: nil,
             role: record.role,
+            roles: record.roles,
             theme: nil,
             enableRSS: nil,
             customCSS: nil,
